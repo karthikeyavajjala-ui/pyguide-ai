@@ -1,0 +1,980 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f7f8f7">
+  <meta name="description" content="PyGuide AI — your personal Python programming assistant. Learn concepts, explore examples, and run safe Python snippets.">
+  <title>PyGuide AI — Your Personal Python Programming Assistant</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='12' fill='%233776ab'/%3E%3Cpath d='M20 6c-7 0-7 3-7 3v5h8v2H10s-4-.5-4 6 3 6 3 6h4v-5s0-3 4-3h7s3 0 3-4V10s.5-4-7-4z' fill='%23fff'/%3E%3Cpath d='M20 34c7 0 7-3 7-3v-5h-8v-2h11s4 .5 4-6-3-6-3-6h-4v5s0 3-4 3h-7s-3 0-3 4v6s-.5 4 7 4z' fill='%23ffd343'/%3E%3C/svg%3E">
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f6f8f7;
+      --surface: #ffffff;
+      --surface-soft: #f9fbfa;
+      --surface-muted: #f0f3f2;
+      --sidebar: #f2f5f4;
+      --border: #e4eae7;
+      --border-strong: #d8e0dc;
+      --text: #202b29;
+      --text-2: #52615c;
+      --muted: #84918c;
+      --muted-2: #a4aea9;
+      --blue: #3776ab;
+      --blue-deep: #2c6292;
+      --blue-soft: #eaf3fb;
+      --blue-soft-2: #f2f7fc;
+      --mint: #159c79;
+      --mint-soft: #e8f6f0;
+      --yellow: #f6c846;
+      --amber-soft: #fff6d9;
+      --rose: #d85959;
+      --rose-soft: #fff0ed;
+      --shadow-sm: 0 1px 2px rgba(27, 44, 39, .04), 0 3px 10px rgba(27, 44, 39, .025);
+      --shadow-lg: 0 20px 60px rgba(27, 44, 39, .14);
+      --radius-sm: 9px;
+      --radius: 14px;
+      --radius-lg: 20px;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    }
+    html[data-theme="dark"] {
+      color-scheme: dark;
+      --bg: #0e1318;
+      --surface: #141b21;
+      --surface-soft: #171f26;
+      --surface-muted: #1d272f;
+      --sidebar: #11181e;
+      --border: #27323a;
+      --border-strong: #34414a;
+      --text: #e7efeb;
+      --text-2: #b5c2bc;
+      --muted: #87968f;
+      --muted-2: #66766e;
+      --blue: #77b5ed;
+      --blue-deep: #8ec6f5;
+      --blue-soft: #1b2c3a;
+      --blue-soft-2: #182632;
+      --mint: #55c8a2;
+      --mint-soft: #19332b;
+      --yellow: #f2cb58;
+      --amber-soft: #3a321c;
+      --rose: #f08b83;
+      --rose-soft: #3c2524;
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, .18), 0 4px 12px rgba(0, 0, 0, .08);
+      --shadow-lg: 0 20px 70px rgba(0, 0, 0, .4);
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+    button, textarea, input { font: inherit; }
+    button { color: inherit; }
+    button:focus-visible, textarea:focus-visible, input:focus-visible { outline: 3px solid color-mix(in srgb, var(--blue) 27%, transparent); outline-offset: 2px; }
+    ::selection { background: color-mix(in srgb, var(--blue) 24%, transparent); }
+    .app-shell { height: 100dvh; width: 100%; display: flex; overflow: hidden; background: var(--bg); }
+    .sidebar {
+      width: 254px; flex: 0 0 254px; height: 100%; display: flex; flex-direction: column;
+      background: var(--sidebar); border-right: 1px solid var(--border); position: relative; z-index: 20;
+      transition: transform .24s ease, width .2s ease, flex-basis .2s ease;
+    }
+    .sidebar-head { padding: 18px 15px 14px; }
+    .brand-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 0 2px 23px; }
+    .brand-lockup { display: flex; align-items: center; gap: 10px; min-width: 0; }
+    .brand-mark { width: 35px; height: 35px; border-radius: 11px; display: grid; place-items: center; flex: 0 0 auto; background: #3776ab; box-shadow: 0 3px 8px rgba(55, 118, 171, .2); }
+    .brand-mark svg { width: 27px; height: 27px; }
+    .brand-name { font-size: 16px; letter-spacing: -.45px; font-weight: 750; line-height: 1.12; }
+    .brand-name span { color: var(--blue); font-size: 10px; letter-spacing: .08em; margin-left: 3px; vertical-align: 2px; font-weight: 800; }
+    .brand-tagline { font-size: 10px; color: var(--muted); margin-top: 3px; white-space: nowrap; }
+    .icon-btn { border: 0; width: 32px; height: 32px; display: inline-grid; place-items: center; border-radius: 9px; color: var(--muted); background: transparent; cursor: pointer; transition: .18s ease; }
+    .icon-btn:hover { color: var(--text); background: var(--surface-muted); }
+    .icon-btn svg, .btn svg, .new-chat svg, .nav-link svg, .feature-icon svg, .prompt-chip svg, .tag svg { width: 17px; height: 17px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; flex: 0 0 auto; }
+    .new-chat {
+      width: 100%; height: 39px; border: 1px solid color-mix(in srgb, var(--blue) 20%, var(--border)); border-radius: 10px;
+      background: var(--surface); color: var(--text); box-shadow: var(--shadow-sm); display: flex; align-items: center; gap: 9px;
+      padding: 0 10px; font-size: 12px; font-weight: 650; cursor: pointer; transition: .18s ease;
+    }
+    .new-chat:hover { background: var(--blue-soft-2); border-color: color-mix(in srgb, var(--blue) 40%, var(--border)); transform: translateY(-1px); }
+    .new-chat .new-chat-plus { width: 21px; height: 21px; display: grid; place-items: center; color: var(--blue); background: var(--blue-soft); border-radius: 6px; }
+    .new-chat .new-chat-plus svg { width: 15px; height: 15px; }
+    .new-chat kbd { margin-left: auto; color: var(--muted); font: 10px var(--font-mono); border: 1px solid var(--border); background: var(--surface-soft); padding: 2px 5px; border-radius: 4px; }
+    .sidebar-scroll { min-height: 0; overflow: auto; flex: 1; padding: 2px 10px 16px; scrollbar-width: thin; scrollbar-color: var(--border-strong) transparent; }
+    .side-section { margin-top: 16px; }
+    .side-section:first-child { margin-top: 8px; }
+    .side-section-title { padding: 0 9px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 7px; color: var(--muted); font-size: 9px; font-weight: 780; letter-spacing: .12em; text-transform: uppercase; }
+    .side-section-title .side-count { font-size: 9px; letter-spacing: 0; color: var(--muted-2); font-weight: 600; }
+    .nav-link {
+      border: 0; background: transparent; width: 100%; display: flex; align-items: center; gap: 10px;
+      padding: 8px 9px; border-radius: 8px; text-align: left; color: var(--text-2); font-size: 12px;
+      cursor: pointer; transition: background .15s ease, color .15s ease; line-height: 1.2;
+    }
+    .nav-link:hover { color: var(--text); background: color-mix(in srgb, var(--surface) 78%, transparent); }
+    .nav-link.active { color: var(--blue-deep); background: var(--blue-soft); font-weight: 650; }
+    .nav-link .nav-icon { width: 17px; height: 17px; display: grid; place-items: center; color: var(--muted); flex: 0 0 auto; }
+    .nav-link.active .nav-icon { color: var(--blue); }
+    .nav-link .nav-icon svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+    .nav-link .nav-dot { width: 7px; height: 7px; border-radius: 50%; margin: 0 5px; flex: 0 0 auto; background: var(--dot, var(--blue)); }
+    .recent-empty { padding: 5px 10px 7px; color: var(--muted); font-size: 11px; line-height: 1.55; }
+    .recent-link { position: relative; padding-right: 25px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .recent-link .recent-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .recent-link .recent-time { font-size: 9px; margin-left: auto; color: var(--muted-2); }
+    .recent-link.active { background: var(--surface); color: var(--text); box-shadow: inset 0 0 0 1px var(--border); }
+    .recent-delete { display: none; position: absolute; right: 5px; top: 50%; transform: translateY(-50%); width: 22px; height: 22px; place-items: center; border-radius: 6px; color: var(--muted); background: var(--surface); border: 0; cursor: pointer; }
+    .recent-link:hover .recent-delete { display: grid; }
+    .recent-delete:hover { color: var(--rose); background: var(--rose-soft); }
+    .recent-delete svg { width: 12px; height: 12px; }
+    .sidebar-bottom { padding: 11px 14px 13px; border-top: 1px solid var(--border); }
+    .progress-mini { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .progress-ring { width: 30px; height: 30px; flex: 0 0 auto; border-radius: 50%; display: grid; place-items: center; background: conic-gradient(var(--mint) var(--progress, 0%), var(--border) 0); position: relative; }
+    .progress-ring::after { content: ""; position: absolute; inset: 4px; border-radius: 50%; background: var(--sidebar); }
+    .progress-ring span { position: relative; z-index: 1; font-size: 7px; font-weight: 800; color: var(--mint); }
+    .progress-mini-copy { min-width: 0; flex: 1; }
+    .progress-mini-copy strong { display: block; font-size: 10px; font-weight: 700; }
+    .progress-mini-copy span { font-size: 9px; color: var(--muted); }
+    .side-user { display: flex; align-items: center; gap: 9px; padding-top: 11px; border-top: 1px solid var(--border); }
+    .avatar-small { width: 28px; height: 28px; display: grid; place-items: center; border-radius: 50%; color: #397a69; background: #dcefe8; font-size: 10px; font-weight: 800; }
+    html[data-theme="dark"] .avatar-small { background: #254238; color: #8ad4b5; }
+    .side-user-copy { min-width: 0; flex: 1; }
+    .side-user-copy strong { display: block; font-size: 10px; line-height: 1.3; font-weight: 700; }
+    .side-user-copy span { color: var(--muted); font-size: 9px; }
+    .side-user .icon-btn { width: 27px; height: 27px; }
+    .side-user .icon-btn svg { width: 14px; height: 14px; }
+    .main-frame { flex: 1; min-width: 0; min-height: 0; display: flex; flex-direction: column; }
+    .topbar {
+      height: 58px; flex: 0 0 58px; border-bottom: 1px solid var(--border); background: var(--surface);
+      display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 0 24px;
+    }
+    .topbar-left, .topbar-right { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .mobile-menu { display: none; }
+    .crumbs { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 11px; white-space: nowrap; min-width: 0; }
+    .crumbs strong { color: var(--text-2); font-weight: 650; overflow: hidden; text-overflow: ellipsis; }
+    .crumb-slash { color: var(--border-strong); }
+    .topbar-right { gap: 8px; }
+    .knowledge-status { color: var(--mint); background: var(--mint-soft); border: 1px solid color-mix(in srgb, var(--mint) 18%, transparent); border-radius: 999px; padding: 5px 9px; display: flex; align-items: center; gap: 6px; font-size: 9px; letter-spacing: .02em; font-weight: 700; white-space: nowrap; }
+    .knowledge-status .status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--mint); box-shadow: 0 0 0 3px color-mix(in srgb, var(--mint) 13%, transparent); }
+    .topbar-divider { height: 20px; width: 1px; background: var(--border); margin: 0 3px; }
+    .topbar-search { height: 31px; border-radius: 8px; border: 1px solid var(--border); color: var(--muted); background: var(--surface-soft); padding: 0 9px; display: flex; align-items: center; gap: 7px; cursor: pointer; font-size: 10px; transition: .15s ease; }
+    .topbar-search:hover { border-color: var(--border-strong); color: var(--text); background: var(--surface); }
+    .topbar-search svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2; }
+    .topbar-search kbd { margin-left: 12px; font: 9px var(--font-mono); border: 1px solid var(--border); border-radius: 4px; padding: 1px 4px; color: var(--muted); background: var(--surface); }
+    .topbar-icon { width: 32px; height: 32px; }
+    .workspace { flex: 1; min-height: 0; display: flex; }
+    .chat-column { flex: 1; min-width: 0; min-height: 0; display: flex; flex-direction: column; background: var(--bg); }
+    .thread-scroll { flex: 1; min-height: 0; overflow-y: auto; scroll-behavior: smooth; padding: 34px clamp(20px, 4.5vw, 62px) 24px; scrollbar-width: thin; scrollbar-color: var(--border-strong) transparent; }
+    .welcome { width: min(100%, 960px); margin: 0 auto; padding: 8px 0 14px; animation: rise-in .42s ease both; }
+    @keyframes rise-in { from { opacity: 0; transform: translateY(9px); } to { opacity: 1; transform: translateY(0); } }
+    .hero-topline { display: flex; justify-content: center; margin-bottom: 15px; }
+    .hero-eyebrow { display: inline-flex; align-items: center; gap: 7px; border: 1px solid var(--border); background: var(--surface); border-radius: 999px; padding: 5px 10px; color: var(--text-2); text-transform: uppercase; font-size: 9px; letter-spacing: .12em; font-weight: 750; box-shadow: 0 1px 2px rgba(0,0,0,.02); }
+    .hero-eyebrow .eyebrow-spark { width: 16px; height: 16px; border-radius: 50%; display: grid; place-items: center; color: var(--blue); background: var(--blue-soft); }
+    .hero-eyebrow svg { width: 10px; height: 10px; stroke: currentColor; fill: none; stroke-width: 2; }
+    .hero-title { margin: 0; text-align: center; letter-spacing: -2.2px; line-height: 1.06; font-size: clamp(35px, 4.2vw, 54px); font-weight: 780; }
+    .hero-title .hero-gradient { color: var(--blue); }
+    .hero-description { max-width: 535px; margin: 16px auto 20px; color: var(--text-2); text-align: center; font-size: 14px; line-height: 1.72; }
+    .hero-actions { display: flex; justify-content: center; gap: 9px; margin-bottom: 28px; }
+    .btn { border: 1px solid var(--border); border-radius: 9px; height: 37px; padding: 0 13px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: var(--surface); color: var(--text-2); font-size: 11px; font-weight: 680; cursor: pointer; transition: .17s ease; white-space: nowrap; }
+    .btn:hover { color: var(--text); border-color: var(--border-strong); background: var(--surface-soft); transform: translateY(-1px); }
+    .btn svg { width: 14px; height: 14px; }
+    .btn-primary { color: white; background: var(--blue); border-color: var(--blue); box-shadow: 0 4px 10px color-mix(in srgb, var(--blue) 18%, transparent); }
+    .btn-primary:hover { color: white; background: var(--blue-deep); border-color: var(--blue-deep); }
+    html[data-theme="dark"] .btn-primary { color: #10202d; }
+    html[data-theme="dark"] .btn-primary:hover { color: #10202d; }
+    .btn-soft { background: var(--blue-soft-2); color: var(--blue-deep); border-color: color-mix(in srgb, var(--blue) 17%, var(--border)); }
+    .feature-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+    .feature-card { min-height: 95px; padding: 13px 14px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); text-align: left; cursor: pointer; position: relative; overflow: hidden; transition: .18s ease; box-shadow: 0 1px 1px rgba(14, 35, 29, .015); }
+    .feature-card:hover { border-color: color-mix(in srgb, var(--blue) 35%, var(--border)); box-shadow: var(--shadow-sm); transform: translateY(-2px); }
+    .feature-card::after { content: ""; position: absolute; width: 54px; height: 54px; right: -23px; bottom: -28px; border-radius: 50%; background: color-mix(in srgb, var(--card-accent, var(--blue)) 8%, transparent); transition: transform .2s ease; }
+    .feature-card:hover::after { transform: scale(1.8); }
+    .feature-card-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 7px; }
+    .feature-icon { width: 26px; height: 26px; display: grid; place-items: center; color: var(--card-accent, var(--blue)); background: color-mix(in srgb, var(--card-accent, var(--blue)) 10%, var(--surface)); border-radius: 8px; }
+    .feature-icon svg { width: 15px; height: 15px; }
+    .feature-arrow { color: var(--muted-2); opacity: 0; transform: translateX(-3px); transition: .18s ease; }
+    .feature-card:hover .feature-arrow { opacity: 1; transform: translateX(0); }
+    .feature-arrow svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 1.8; }
+    .feature-card strong { display: block; font-size: 11px; font-weight: 720; letter-spacing: -.1px; }
+    .feature-card p { margin: 3px 0 0; max-width: 235px; font-size: 10px; line-height: 1.45; color: var(--muted); }
+    .starter-prompts { margin-top: 23px; display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 7px; }
+    .starter-label { color: var(--muted); font-size: 10px; margin-right: 2px; }
+    .prompt-chip { border: 1px solid var(--border); border-radius: 999px; padding: 6px 10px; display: inline-flex; align-items: center; gap: 6px; background: var(--surface); color: var(--text-2); font-size: 10px; cursor: pointer; transition: .15s ease; }
+    .prompt-chip:hover { color: var(--blue-deep); background: var(--blue-soft-2); border-color: color-mix(in srgb, var(--blue) 25%, var(--border)); }
+    .prompt-chip svg { width: 12px; height: 12px; }
+    .message-list { width: min(100%, 930px); margin: 0 auto; display: flex; flex-direction: column; gap: 21px; padding-bottom: 12px; }
+    .message-row { width: 100%; animation: message-in .28s ease both; }
+    @keyframes message-in { from { opacity: 0; transform: translateY(7px); } to { opacity: 1; transform: translateY(0); } }
+    .user-row { display: flex; justify-content: flex-end; }
+    .user-message-wrap { max-width: min(76%, 630px); display: flex; flex-direction: column; align-items: flex-end; gap: 5px; }
+    .message-meta { display: flex; align-items: center; gap: 7px; color: var(--muted); font-size: 9px; padding: 0 3px; }
+    .message-meta .avatar-tiny { width: 17px; height: 17px; display: grid; place-items: center; color: white; background: var(--blue); border-radius: 50%; font-size: 8px; font-weight: 800; }
+    .user-bubble { color: var(--text); background: var(--surface); border: 1px solid var(--border); border-radius: 13px 13px 4px 13px; box-shadow: var(--shadow-sm); padding: 11px 14px; font-size: 12px; line-height: 1.7; overflow-wrap: anywhere; }
+    .user-bubble p { margin: 0; }
+    .user-bubble p + p { margin-top: 8px; }
+    .user-bubble ul { padding-left: 18px; margin: 6px 0; }
+    .user-bubble pre { margin: 8px 0 0; padding: 10px 12px; overflow-x: auto; color: #e6edf3; background: #111a22; border-radius: 8px; font: 10px/1.6 var(--font-mono); }
+    .assistant-card { width: 100%; border: 1px solid var(--border); border-radius: 14px; background: var(--surface); overflow: hidden; box-shadow: var(--shadow-sm); }
+    .assistant-card-head { display: flex; align-items: center; gap: 9px; padding: 12px 15px; border-bottom: 1px solid var(--border); background: var(--surface-soft); }
+    .assistant-logo { width: 26px; height: 26px; flex: 0 0 auto; display: grid; place-items: center; background: #3776ab; border-radius: 8px; }
+    .assistant-logo svg { width: 20px; height: 20px; }
+    .assistant-head-copy { min-width: 0; flex: 1; }
+    .assistant-head-copy strong { display: inline; font-size: 10px; font-weight: 760; }
+    .assistant-head-copy span { color: var(--muted); font-size: 9px; margin-left: 6px; }
+    .grounded-badge { color: var(--mint); background: var(--mint-soft); border: 1px solid color-mix(in srgb, var(--mint) 17%, transparent); border-radius: 999px; padding: 3px 7px; font-size: 8px; line-height: 1.2; font-weight: 700; letter-spacing: .02em; }
+    .assistant-card-body { padding: 17px 19px 15px; }
+    .answer-eyebrow { color: var(--blue); font-size: 8px; letter-spacing: .12em; font-weight: 800; text-transform: uppercase; margin-bottom: 5px; }
+    .answer-title { margin: 0; color: var(--text); font-size: 18px; letter-spacing: -.45px; line-height: 1.25; font-weight: 760; }
+    .answer-summary { margin: 12px 0 17px; color: var(--text-2); border-left: 2px solid var(--blue); padding: 2px 0 2px 11px; font-size: 12px; line-height: 1.68; }
+    .answer-section { margin-top: 15px; }
+    .answer-section h3 { margin: 0 0 6px; display: flex; align-items: center; gap: 7px; font-size: 11px; font-weight: 740; }
+    .answer-section h3 .section-dot { display: grid; place-items: center; width: 18px; height: 18px; border-radius: 6px; color: var(--blue); background: var(--blue-soft); }
+    .answer-section h3 .section-dot svg { width: 11px; height: 11px; stroke: currentColor; fill: none; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+    .answer-copy { color: var(--text-2); font-size: 11px; line-height: 1.72; }
+    .answer-copy p { margin: 0 0 7px; }
+    .answer-copy p:last-child { margin-bottom: 0; }
+    .answer-copy strong { color: var(--text); font-weight: 680; }
+    .inline-code { padding: 1px 4px; border-radius: 4px; background: var(--surface-muted); color: var(--blue-deep); font: .92em var(--font-mono); }
+    .code-card { margin-top: 15px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface-soft); overflow: hidden; }
+    .code-card-head { min-height: 35px; padding: 0 10px; background: var(--surface-muted); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .code-language { display: inline-flex; align-items: center; gap: 6px; color: var(--text-2); font-size: 8px; font-weight: 760; letter-spacing: .1em; }
+    .code-language .py-mini { color: var(--blue); font-family: var(--font-mono); font-size: 10px; font-weight: 900; }
+    .code-actions { display: flex; align-items: center; gap: 5px; }
+    .code-action { height: 24px; border: 1px solid transparent; border-radius: 6px; background: transparent; color: var(--muted); padding: 0 7px; display: inline-flex; align-items: center; gap: 5px; font-size: 9px; cursor: pointer; transition: .15s ease; }
+    .code-action:hover { border-color: var(--border-strong); background: var(--surface); color: var(--text); }
+    .code-action.run-action { color: var(--mint); }
+    .code-action.run-action:hover { border-color: color-mix(in srgb, var(--mint) 25%, var(--border)); background: var(--mint-soft); }
+    .code-action:disabled { cursor: not-allowed; opacity: .55; }
+    .code-action svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .code-card pre { margin: 0; padding: 12px 14px; overflow-x: auto; color: #d7e2eb; background: #101820; font: 10.5px/1.72 var(--font-mono); tab-size: 4; }
+    html[data-theme="dark"] .code-card pre { background: #101820; }
+    .tok-keyword { color: #c792ea; }
+    .tok-builtin { color: #82aaff; }
+    .tok-string { color: #c3e88d; }
+    .tok-comment { color: #778692; font-style: italic; }
+    .tok-number { color: #f78c6c; }
+    .tok-operator { color: #89ddff; }
+    .tok-function { color: #ffcb6b; }
+    .expected-output { display: flex; align-items: stretch; border-top: 1px solid var(--border); background: var(--surface); }
+    .output-label { flex: 0 0 auto; width: 69px; padding: 10px 9px; border-right: 1px solid var(--border); color: var(--muted); font-size: 8px; letter-spacing: .1em; text-transform: uppercase; font-weight: 750; }
+    .expected-output pre { flex: 1; padding: 9px 11px; color: var(--text-2); background: transparent; font: 10px/1.55 var(--font-mono); white-space: pre-wrap; word-break: break-word; }
+    .code-note { padding: 7px 11px; border-top: 1px solid var(--border); color: var(--muted); font-size: 9px; background: var(--surface-soft); }
+    .code-note strong { color: var(--text-2); }
+    .run-result { padding: 0; border-top: 1px solid var(--border); background: #111923; color: #cde9dc; }
+    .run-result:not(.is-open) { display: none; }
+    .app-shell.guide-hidden .right-panel { display: none; }
+    .run-result.is-error { color: #ffb2a8; }
+    .run-result.is-open { padding: 9px 11px; }
+    .run-result-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px; color: #91a69b; font: 8px var(--font-mono); text-transform: uppercase; letter-spacing: .08em; }
+    .run-result pre { padding: 0; color: inherit; white-space: pre-wrap; word-break: break-word; font: 10px/1.55 var(--font-mono); }
+    .takeaway { display: flex; gap: 9px; margin-top: 14px; padding: 10px 11px; border: 1px solid color-mix(in srgb, var(--yellow) 33%, var(--border)); border-radius: 8px; background: color-mix(in srgb, var(--amber-soft) 62%, var(--surface)); color: var(--text-2); font-size: 10px; line-height: 1.6; }
+    .takeaway-icon { color: #c39316; font-size: 13px; flex: 0 0 auto; }
+    .takeaway strong { color: var(--text); }
+    .related-wrap { margin-top: 15px; }
+    .related-label { margin-bottom: 7px; color: var(--muted); font-size: 8px; font-weight: 750; letter-spacing: .1em; text-transform: uppercase; }
+    .related-list { display: flex; flex-wrap: wrap; gap: 6px; }
+    .related-chip { border: 1px solid var(--border); border-radius: 999px; background: var(--surface); color: var(--text-2); padding: 5px 9px; font-size: 9px; cursor: pointer; transition: .15s ease; }
+    .related-chip:hover { color: var(--blue-deep); border-color: color-mix(in srgb, var(--blue) 34%, var(--border)); background: var(--blue-soft-2); }
+    .answer-footer { display: flex; align-items: center; gap: 6px; border-top: 1px solid var(--border); padding: 9px 13px; background: var(--surface-soft); }
+    .answer-footer .footer-spacer { flex: 1; }
+    .feedback-btn { min-height: 26px; border: 1px solid transparent; border-radius: 6px; background: transparent; color: var(--muted); padding: 0 7px; font-size: 9px; display: inline-flex; align-items: center; gap: 5px; cursor: pointer; transition: .15s ease; }
+    .feedback-btn:hover { border-color: var(--border); background: var(--surface); color: var(--text); }
+    .feedback-btn.selected { color: var(--mint); background: var(--mint-soft); border-color: color-mix(in srgb, var(--mint) 16%, transparent); }
+    .feedback-btn svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+    .typing-card { align-self: flex-start; display: inline-flex; align-items: center; gap: 9px; margin: 0 0 9px; border: 1px solid var(--border); border-radius: 11px; padding: 10px 12px; background: var(--surface); color: var(--muted); font-size: 10px; box-shadow: var(--shadow-sm); }
+    .typing-dots { display: flex; gap: 3px; }
+    .typing-dots i { width: 4px; height: 4px; border-radius: 50%; background: var(--blue); animation: pulse-dot .8s ease-in-out infinite alternate; }
+    .typing-dots i:nth-child(2) { animation-delay: .16s; }
+    .typing-dots i:nth-child(3) { animation-delay: .32s; }
+    @keyframes pulse-dot { from { opacity: .3; transform: translateY(1px); } to { opacity: 1; transform: translateY(-2px); } }
+    .composer-area { padding: 10px clamp(16px, 4.5vw, 62px) 15px; background: linear-gradient(to bottom, color-mix(in srgb, var(--bg) 0%, transparent), var(--bg) 16%); }
+    .composer-inner { width: min(100%, 930px); margin: 0 auto; }
+    .compose-box { border: 1px solid var(--border-strong); border-radius: 13px; background: var(--surface); box-shadow: 0 5px 18px rgba(17, 43, 32, .055); transition: border-color .15s ease, box-shadow .15s ease; }
+    .compose-box:focus-within { border-color: color-mix(in srgb, var(--blue) 50%, var(--border)); box-shadow: 0 0 0 3px color-mix(in srgb, var(--blue) 9%, transparent), 0 5px 18px rgba(17, 43, 32, .055); }
+    .compose-top { padding: 10px 13px 3px; }
+    #questionInput { display: block; width: 100%; min-height: 27px; max-height: 130px; resize: none; border: 0; outline: 0; padding: 1px 0; background: transparent; color: var(--text); font-size: 12px; line-height: 1.6; }
+    #questionInput::placeholder { color: var(--muted); opacity: .95; }
+    #questionInput:focus-visible { outline: 0; }
+    .compose-bottom { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 7px 9px 8px 12px; }
+    .compose-tools { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 9px; }
+    .compose-context { display: inline-flex; align-items: center; gap: 5px; }
+    .compose-context svg { width: 12px; height: 12px; stroke: var(--mint); fill: none; stroke-width: 1.8; }
+    .compose-separator { width: 1px; height: 13px; background: var(--border); }
+    .compose-shortcut { color: var(--muted-2); font-size: 9px; }
+    .compose-shortcut kbd { border: 1px solid var(--border); border-radius: 4px; padding: 1px 4px; background: var(--surface-soft); font: 8px var(--font-mono); color: var(--muted); }
+    .send-btn { width: 30px; height: 30px; display: grid; place-items: center; border: 0; border-radius: 8px; color: white; background: var(--blue); cursor: pointer; transition: .16s ease; box-shadow: 0 3px 8px color-mix(in srgb, var(--blue) 20%, transparent); }
+    .send-btn svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .send-btn:hover { background: var(--blue-deep); transform: translateY(-1px); }
+    .send-btn:disabled { cursor: not-allowed; opacity: .45; box-shadow: none; transform: none; }
+    .compose-disclaimer { margin-top: 7px; color: var(--muted); font-size: 8px; text-align: center; letter-spacing: .01em; }
+    .right-panel { width: 270px; flex: 0 0 270px; border-left: 1px solid var(--border); background: var(--surface); overflow-y: auto; padding: 19px 15px 22px; scrollbar-width: thin; scrollbar-color: var(--border-strong) transparent; }
+    .right-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 17px; }
+    .right-head h2 { margin: 0; font-size: 11px; font-weight: 760; letter-spacing: -.1px; }
+    .right-head span { color: var(--muted); font-size: 9px; }
+    .panel-eyebrow { margin-bottom: 7px; color: var(--muted); font-size: 8px; font-weight: 780; letter-spacing: .12em; text-transform: uppercase; }
+    .progress-card { padding: 12px; background: var(--surface-soft); border: 1px solid var(--border); border-radius: 11px; }
+    .progress-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+    .progress-card h3 { margin: 0; font-size: 11px; font-weight: 730; }
+    .progress-card p { margin: 4px 0 0; color: var(--muted); font-size: 9px; line-height: 1.55; }
+    .progress-percent { color: var(--mint); font: 700 10px var(--font-mono); }
+    .progress-track { height: 5px; margin: 12px 0 7px; border-radius: 99px; overflow: hidden; background: var(--border); }
+    .progress-fill { height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--mint), #63c9a5); transition: width .4s ease; }
+    .progress-counts { display: flex; justify-content: space-between; color: var(--muted); font-size: 8px; }
+    .right-section { margin-top: 22px; }
+    .concept-placeholder { min-height: 130px; padding: 13px; border: 1px dashed var(--border-strong); border-radius: 11px; background: var(--surface-soft); }
+    .placeholder-symbol { width: 29px; height: 29px; display: grid; place-items: center; border-radius: 9px; background: var(--blue-soft); color: var(--blue); margin-bottom: 9px; }
+    .placeholder-symbol svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+    .concept-placeholder strong { display: block; font-size: 10px; }
+    .concept-placeholder p { color: var(--muted); font-size: 9px; line-height: 1.6; margin: 4px 0 0; }
+    .active-concept { padding: 13px; border: 1px solid var(--border); border-radius: 11px; background: var(--surface-soft); }
+    .active-concept .concept-tag { display: inline-flex; align-items: center; gap: 5px; color: var(--blue); background: var(--blue-soft); border-radius: 5px; padding: 3px 6px; font-size: 8px; font-weight: 740; margin-bottom: 8px; }
+    .active-concept h3 { margin: 0; font-size: 13px; line-height: 1.35; letter-spacing: -.2px; }
+    .active-concept p { margin: 6px 0 0; color: var(--text-2); font-size: 9px; line-height: 1.6; }
+    .path-list { display: flex; flex-direction: column; gap: 7px; }
+    .path-item { width: 100%; display: flex; align-items: center; gap: 9px; text-align: left; border: 1px solid var(--border); border-radius: 9px; padding: 8px; background: var(--surface); cursor: pointer; transition: .15s ease; }
+    .path-item:hover { border-color: color-mix(in srgb, var(--blue) 35%, var(--border)); background: var(--blue-soft-2); }
+    .path-number { width: 23px; height: 23px; border-radius: 7px; display: grid; place-items: center; background: var(--surface-muted); color: var(--muted); font: 9px var(--font-mono); }
+    .path-item.done .path-number { color: var(--mint); background: var(--mint-soft); }
+    .path-copy { min-width: 0; flex: 1; }
+    .path-copy strong { display: block; font-size: 9px; font-weight: 700; }
+    .path-copy span { display: block; color: var(--muted); font-size: 8px; margin-top: 1px; }
+    .path-arrow { color: var(--muted-2); font-size: 14px; }
+    .related-panel-list { display: flex; flex-direction: column; gap: 4px; }
+    .related-panel-item { border: 0; background: transparent; padding: 6px 1px; text-align: left; color: var(--text-2); display: flex; align-items: center; gap: 7px; font-size: 9px; cursor: pointer; }
+    .related-panel-item:hover { color: var(--blue-deep); }
+    .related-panel-item .tiny-dot { width: 5px; height: 5px; background: var(--mint); border-radius: 50%; }
+    .related-panel-item svg { margin-left: auto; width: 12px; height: 12px; stroke: var(--muted); fill: none; stroke-width: 1.8; }
+    .right-note { margin-top: 19px; padding: 10px; border-radius: 9px; color: var(--text-2); background: var(--blue-soft-2); font-size: 8px; line-height: 1.6; }
+    .right-note strong { color: var(--blue-deep); }
+    .mobile-scrim { display: none; }
+    .modal-backdrop { position: fixed; z-index: 80; inset: 0; display: none; align-items: center; justify-content: center; padding: 20px; background: rgba(13, 21, 25, .42); backdrop-filter: blur(5px); animation: fade-in .16s ease; }
+    .modal-backdrop.show { display: flex; }
+    @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+    .modal { width: min(100%, 630px); max-height: min(82vh, 720px); display: flex; flex-direction: column; overflow: hidden; border: 1px solid var(--border); border-radius: 16px; background: var(--surface); box-shadow: var(--shadow-lg); animation: modal-in .18s ease both; }
+    @keyframes modal-in { from { opacity: 0; transform: translateY(8px) scale(.99); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    .modal-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 15px; padding: 17px 19px 13px; border-bottom: 1px solid var(--border); }
+    .modal-head h2 { margin: 0; font-size: 15px; letter-spacing: -.2px; }
+    .modal-head p { margin: 4px 0 0; color: var(--muted); font-size: 10px; }
+    .modal-search-wrap { padding: 12px 17px 8px; }
+    .modal-search { display: flex; align-items: center; gap: 8px; height: 37px; border: 1px solid var(--border-strong); background: var(--surface-soft); padding: 0 10px; border-radius: 8px; }
+    .modal-search svg { width: 15px; height: 15px; stroke: var(--muted); fill: none; stroke-width: 2; flex: 0 0 auto; }
+    .modal-search input { flex: 1; min-width: 0; border: 0; outline: 0; color: var(--text); background: transparent; font-size: 11px; }
+    .modal-search input::placeholder { color: var(--muted); }
+    .topic-results { min-height: 0; overflow-y: auto; padding: 2px 12px 14px; }
+    .topic-group-title { padding: 10px 7px 5px; color: var(--muted); font-size: 8px; letter-spacing: .12em; text-transform: uppercase; font-weight: 780; }
+    .topic-result { display: flex; align-items: center; gap: 10px; width: 100%; border: 0; border-radius: 8px; padding: 9px 8px; background: transparent; text-align: left; cursor: pointer; transition: .14s ease; }
+    .topic-result:hover { background: var(--surface-muted); }
+    .topic-result-icon { width: 27px; height: 27px; flex: 0 0 auto; display: grid; place-items: center; border-radius: 8px; color: var(--blue); background: var(--blue-soft); }
+    .topic-result-icon svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 1.8; }
+    .topic-result-copy { min-width: 0; flex: 1; }
+    .topic-result-copy strong { display: block; color: var(--text); font-size: 10px; font-weight: 700; }
+    .topic-result-copy span { display: block; margin-top: 2px; color: var(--muted); font-size: 9px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+    .topic-result-arrow { color: var(--muted-2); font-size: 14px; }
+    .empty-search { padding: 25px 10px; text-align: center; color: var(--muted); font-size: 11px; }
+    .practice-modal { width: min(100%, 690px); }
+    .practice-head-right { display: flex; align-items: center; gap: 7px; }
+    .practice-level { border-radius: 999px; padding: 4px 8px; background: var(--mint-soft); color: var(--mint); font-size: 8px; font-weight: 750; }
+    .practice-body { min-height: 0; overflow-y: auto; padding: 17px 19px 18px; }
+    .practice-meta { color: var(--blue); font-size: 8px; font-weight: 780; letter-spacing: .12em; text-transform: uppercase; }
+    .practice-question { margin: 7px 0 6px; font-size: 17px; line-height: 1.35; letter-spacing: -.3px; }
+    .practice-prompt { max-width: 590px; color: var(--text-2); font-size: 11px; line-height: 1.65; }
+    .practice-hint { margin-top: 12px; padding: 8px 10px; border-radius: 8px; background: var(--amber-soft); color: var(--text-2); font-size: 9px; }
+    .practice-hint strong { color: #a67a11; }
+    html[data-theme="dark"] .practice-hint strong { color: var(--yellow); }
+    .practice-editor-label { display: flex; align-items: center; justify-content: space-between; margin: 17px 0 6px; color: var(--text-2); font-size: 9px; font-weight: 700; }
+    .practice-editor { display: block; width: 100%; min-height: 145px; resize: vertical; border: 1px solid var(--border); border-radius: 9px; background: #101820; color: #d7e2eb; padding: 12px; font: 10px/1.65 var(--font-mono); tab-size: 4; outline: 0; }
+    .practice-editor:focus { border-color: color-mix(in srgb, var(--blue) 52%, var(--border)); }
+    .practice-controls { display: flex; align-items: center; gap: 8px; margin-top: 9px; }
+    .practice-output { margin-top: 10px; display: none; border: 1px solid var(--border); border-radius: 8px; background: #111923; color: #cde9dc; padding: 9px 11px; font: 10px/1.6 var(--font-mono); white-space: pre-wrap; word-break: break-word; }
+    .practice-output.show { display: block; }
+    .practice-output.is-error { color: #ffb2a8; }
+    .solution-box { margin-top: 12px; padding: 11px; border: 1px solid var(--border); border-radius: 9px; background: var(--surface-soft); display: none; }
+    .solution-box.show { display: block; }
+    .solution-box-head { margin-bottom: 7px; color: var(--mint); font-size: 8px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+    .solution-box pre { margin: 0; color: var(--text-2); font: 10px/1.65 var(--font-mono); white-space: pre-wrap; }
+    .toast { position: fixed; z-index: 120; left: 50%; bottom: 24px; transform: translate(-50%, 15px); opacity: 0; pointer-events: none; background: var(--text); color: var(--surface); padding: 9px 13px; border-radius: 8px; box-shadow: var(--shadow-lg); font-size: 10px; transition: .2s ease; white-space: nowrap; }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+    .hidden { display: none !important; }
+    @media (max-width: 1280px) {
+      .right-panel { display: none; }
+      .topbar { padding: 0 20px; }
+    }
+    @media (max-width: 850px) {
+      .sidebar { width: 226px; flex-basis: 226px; }
+      .thread-scroll { padding-left: 24px; padding-right: 24px; }
+      .composer-area { padding-left: 24px; padding-right: 24px; }
+      .knowledge-status { display: none; }
+    }
+    @media (max-width: 680px) {
+      body { font-size: 13px; }
+      .sidebar { position: fixed; left: 0; top: 0; bottom: 0; width: 275px; flex-basis: 275px; transform: translateX(-102%); box-shadow: none; }
+      .app-shell.sidebar-open .sidebar { transform: translateX(0); box-shadow: 10px 0 34px rgba(8, 20, 18, .16); }
+      .mobile-scrim { position: fixed; inset: 0; z-index: 15; background: rgba(11, 19, 23, .35); }
+      .app-shell.sidebar-open .mobile-scrim { display: block; }
+      .topbar { height: 54px; flex-basis: 54px; padding: 0 12px; gap: 8px; }
+      .mobile-menu { display: inline-grid; }
+      .crumbs { font-size: 10px; gap: 6px; }
+      .crumbs .crumb-workspace { display: none; }
+      .topbar-left { gap: 7px; }
+      .topbar-right { gap: 3px; }
+      .topbar-search { width: 32px; padding: 0; justify-content: center; border: 0; background: transparent; }
+      .topbar-search span, .topbar-search kbd { display: none; }
+      .topbar-search svg { width: 16px; height: 16px; }
+      .topbar-divider { display: none; }
+      .thread-scroll { padding: 22px 15px 15px; }
+      .welcome { padding-top: 6px; }
+      .hero-eyebrow { font-size: 7px; letter-spacing: .09em; }
+      .hero-title { font-size: clamp(34px, 9vw, 45px); letter-spacing: -1.7px; }
+      .hero-description { margin: 12px auto 17px; font-size: 12px; }
+      .hero-actions { margin-bottom: 21px; }
+      .btn { height: 35px; padding: 0 11px; }
+      .feature-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+      .feature-card { min-height: 89px; padding: 11px; }
+      .feature-card p { font-size: 9px; }
+      .starter-prompts { margin-top: 17px; }
+      .starter-label { flex-basis: 100%; text-align: center; }
+      .prompt-chip { font-size: 9px; }
+      .message-list { gap: 15px; }
+      .assistant-card-body { padding: 14px 13px 12px; }
+      .assistant-card-head { padding: 10px 12px; }
+      .grounded-badge { display: none; }
+      .user-message-wrap { max-width: 90%; }
+      .composer-area { padding: 7px 12px 10px; }
+      .compose-disclaimer { font-size: 7px; }
+      .compose-shortcut { display: none; }
+      .modal-backdrop { padding: 10px; }
+      .modal { max-height: 88vh; }
+      .practice-modal { max-height: 92vh; }
+    }
+    @media (max-width: 430px) {
+      .feature-grid { grid-template-columns: 1fr 1fr; }
+      .feature-card { min-height: 94px; }
+      .feature-card p { line-height: 1.35; }
+      .hero-actions { gap: 6px; }
+      .hero-actions .btn { font-size: 10px; }
+      .hero-title { font-size: 35px; }
+      .answer-footer { padding: 8px 7px; gap: 2px; }
+      .feedback-btn { padding: 0 5px; font-size: 8px; }
+      .answer-title { font-size: 16px; }
+      .expected-output .output-label { width: 58px; }
+      .compose-context { font-size: 8px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell" id="appShell">
+    <aside class="sidebar" id="sidebar" aria-label="Main navigation">
+      <div class="sidebar-head">
+        <div class="brand-row">
+          <div class="brand-lockup">
+            <div class="brand-mark" aria-hidden="true">
+              <svg viewBox="0 0 40 40" role="img"><path fill="#fff" d="M19.2 4.3c-7.3 0-7.1 3.2-7.1 3.2v5.1h8v1.8H9.3s-4.4-.5-4.4 6.5 3.5 6.6 3.5 6.6h4.1v-5.2s-.2-3.2 3.8-3.2h7.1s3.6 0 3.6-4V8.5s.5-4.2-7.8-4.2zm-4.2 4.2a1.4 1.4 0 1 1 2.8 0 1.4 1.4 0 0 1-2.8 0z"/><path fill="#ffd343" d="M20.8 35.7c7.3 0 7.1-3.2 7.1-3.2v-5.1h-8v-1.8h10.8s4.4.5 4.4-6.5-3.5-6.6-3.5-6.6h-4.1v5.2s.2 3.2-3.8 3.2h-7.1s-3.6 0-3.6 4v6.6s-.5 4.2 7.8 4.2zm4.2-4.2a1.4 1.4 0 1 1-2.8 0 1.4 1.4 0 0 1 2.8 0z"/></svg>
+            </div>
+            <div><div class="brand-name">PyGuide<span>AI</span></div><div class="brand-tagline">Your Personal Python Programming Assistant</div></div>
+          </div>
+          <button class="icon-btn" id="sidebarSearch" aria-label="Search Python knowledge" title="Search knowledge base">
+            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg>
+          </button>
+        </div>
+        <button class="new-chat" id="newChatButton"><span class="new-chat-plus"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"></path></svg></span><span>New chat</span><kbd>⌘ N</kbd></button>
+      </div>
+      <div class="sidebar-scroll">
+        <div class="side-section">
+          <div class="side-section-title">Workspace</div>
+          <button class="nav-link" id="exploreNav" data-action="explore"><span class="nav-icon"><svg viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.8"></circle><path d="m16 16 4.5 4.5M8 10.8h5.6M10.8 8v5.6"></path></svg></span><span>Explore topics</span></button>
+          <button class="nav-link" id="practiceNav" data-action="practice"><span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M8 4h8M9 4v5.5l-4.4 7.2A2.2 2.2 0 0 0 6.5 20h11a2.2 2.2 0 0 0 1.9-3.3L15 9.5V4M8 14h8"></path><path d="m10 17 1.3 1.3L14 15.5"></path></svg></span><span>Practice problems</span></button>
+        </div>
+        <div class="side-section">
+          <div class="side-section-title">Recent chats <span class="side-count" id="recentCount"></span></div>
+          <div id="recentChats"><div class="recent-empty">Your conversations will show up here.</div></div>
+        </div>
+        <div class="side-section">
+          <div class="side-section-title">Python library</div>
+          <button class="nav-link" data-query="Explain Python basics for a beginner"><span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M12 3 4.5 7.2v9.6L12 21l7.5-4.2V7.2L12 3z"></path><path d="m4.8 7.5 7.2 4 7.2-4M12 11.5V21"></path></svg></span><span>Python Basics</span></button>
+          <button class="nav-link" data-query="Explain Python data types"><span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M4 5.5h16M4 12h16M4 18.5h16"></path><circle cx="8" cy="5.5" r="1.5"></circle><circle cx="16" cy="12" r="1.5"></circle><circle cx="10" cy="18.5" r="1.5"></circle></svg></span><span>Data Types</span></button>
+          <button class="nav-link" data-query="Explain Python control flow and loops"><span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M5 6h14M5 12h9M5 18h5"></path><path d="m17 10 3 2-3 2"></path></svg></span><span>Control Flow</span></button>
+          <button class="nav-link" data-query="Explain Python functions"><span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M8 4h8M12 4c-2.5 0-3 2-3 4v2H6M9 10h9a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-3a3 3 0 0 1 3-3"></path><circle cx="15.5" cy="15" r=".6" fill="currentColor"></circle></svg></span><span>Functions</span></button>
+          <button class="nav-link" data-query="Explain object oriented programming and Python classes"><span class="nav-icon"><svg viewBox="0 0 24 24"><rect x="3.5" y="4" width="7" height="6" rx="1.5"></rect><rect x="13.5" y="14" width="7" height="6" rx="1.5"></rect><path d="M7 10v4h10v-4M10 7h4"></path></svg></span><span>OOP</span></button>
+          <button class="nav-link" data-query="How do Python modules and imports work"><span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M5 4h9l5 5v11H5z"></path><path d="M14 4v5h5M8 13h8M8 16.5h6"></path></svg></span><span>Modules</span></button>
+          <button class="nav-link" data-query="How do I read and write files in Python"><span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M5 4h9l5 5v11H5z"></path><path d="M14 4v5h5M8 13h8M8 16.5h5"></path></svg></span><span>File Handling</span></button>
+          <button class="nav-link" data-query="How do try and except work in Python"><span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M12 3 21 19H3L12 3z"></path><path d="M12 9v4M12 16.5v.1"></path></svg></span><span>Exceptions</span></button>
+          <button class="nav-link" data-query="What is the Python standard library"><span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1m8.6 8.6 2.1 2.1m0-12.8-2.1 2.1m-8.6 8.6-2.1 2.1"></path><circle cx="12" cy="12" r="4.5"></circle></svg></span><span>Libraries</span></button>
+          <button class="nav-link" data-query="What is a pandas DataFrame and how do I use pandas"><span class="nav-dot" style="--dot:#dfb63d"></span><span>Pandas</span></button>
+          <button class="nav-link" data-query="What is a NumPy array and how do I use NumPy"><span class="nav-dot" style="--dot:#6888c7"></span><span>NumPy</span></button>
+          <button class="nav-link" data-query="How do I make a plot with Matplotlib"><span class="nav-dot" style="--dot:#d76e75"></span><span>Matplotlib</span></button>
+          <button class="nav-link" data-query="How does scikit-learn fit and predict work"><span class="nav-dot" style="--dot:#57a28c"></span><span>Scikit-learn</span></button>
+        </div>
+      </div>
+      <div class="sidebar-bottom">
+        <div class="progress-mini"><div class="progress-ring" id="sidebarProgressRing"><span id="sidebarProgressPct">0%</span></div><div class="progress-mini-copy"><strong>Your learning path</strong><span id="sidebarProgressText">Explore your first concept</span></div><button class="icon-btn" id="guideToggle" aria-label="Toggle learning guide" title="Toggle learning guide"><svg viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"></path><path d="M4 5.5v16M8 7h8M8 10.5h6"></path></svg></button></div>
+        <div class="side-user"><div class="avatar-small">P</div><div class="side-user-copy"><strong>Python learner</strong><span>Personal workspace</span></div><button class="icon-btn" id="themeToggleSide" aria-label="Toggle theme" title="Toggle light/dark theme"><svg viewBox="0 0 24 24" id="sideThemeIcon"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"></path></svg></button></div>
+      </div>
+    </aside>
+    <div class="mobile-scrim" id="mobileScrim"></div>
+    <section class="main-frame">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="icon-btn mobile-menu" id="mobileMenu" aria-label="Open navigation"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"></path></svg></button>
+          <div class="crumbs"><span class="crumb-workspace">Workspace</span><span class="crumb-slash crumb-workspace">/</span><strong id="threadTitle">Python assistant</strong></div>
+        </div>
+        <div class="topbar-right">
+          <div class="knowledge-status"><span class="status-dot"></span><span id="kbStatusText">CURATED KNOWLEDGE · 40+ TOPICS</span></div>
+          <button class="topbar-search" id="searchButton" aria-label="Search Python knowledge"><svg viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.8"></circle><path d="m16 16 4.5 4.5"></path></svg><span>Search knowledge</span><kbd>⌘ K</kbd></button>
+          <div class="topbar-divider"></div>
+          <button class="icon-btn topbar-icon" id="themeToggle" aria-label="Toggle theme" title="Toggle light/dark theme"><svg viewBox="0 0 24 24" id="themeIcon"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"></path></svg></button>
+        </div>
+      </header>
+      <div class="workspace">
+        <main class="chat-column">
+          <div class="thread-scroll" id="threadScroll">
+            <section class="welcome" id="welcome">
+              <div class="hero-topline"><div class="hero-eyebrow"><span class="eyebrow-spark"><svg viewBox="0 0 24 24"><path d="m12 3 1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3zM19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8L19 16z"></path></svg></span> Your Personal Python Programming Assistant</div></div>
+              <h1 class="hero-title">Learn Python with<br><span class="hero-gradient">PyGuide AI</span></h1>
+              <p class="hero-description">Ask Python questions in natural language and get clear explanations, practical examples, and code you can run.</p>
+              <div class="hero-actions"><button class="btn btn-primary" id="startLearning"><span>Start learning</span><svg viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"></path></svg></button><button class="btn" id="exploreTopics"><svg viewBox="0 0 24 24"><path d="M4 5h16M4 12h16M4 19h16"></path><circle cx="8" cy="5" r="1.5"></circle><circle cx="15" cy="12" r="1.5"></circle><circle cx="10" cy="19" r="1.5"></circle></svg><span>Explore Python topics</span></button></div>
+              <div class="feature-grid">
+                <button class="feature-card" data-feature="ask" style="--card-accent:#3776ab"><div class="feature-card-top"><span class="feature-icon"><svg viewBox="0 0 24 24"><path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5H6l-3 2v-6.5A7.5 7.5 0 1 1 20 11.5z"></path><path d="M8 11h.01M12 11h.01M16 11h.01"></path></svg></span><span class="feature-arrow"><svg viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"></path></svg></span></div><strong>Ask Python questions</strong><p>Get a focused explanation grounded in a curated guide.</p></button>
+                <button class="feature-card" data-feature="examples" style="--card-accent:#159c79"><div class="feature-card-top"><span class="feature-icon"><svg viewBox="0 0 24 24"><path d="m8 7-5 5 5 5M16 7l5 5-5 5M14 4l-4 16"></path></svg></span><span class="feature-arrow"><svg viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"></path></svg></span></div><strong>Get code examples</strong><p>See clean Python snippets with their expected output.</p></button>
+                <button class="feature-card" data-feature="errors" style="--card-accent:#d77657"><div class="feature-card-top"><span class="feature-icon"><svg viewBox="0 0 24 24"><path d="M12 3 21 19H3L12 3z"></path><path d="M12 9v4M12 16.5v.1"></path></svg></span><span class="feature-arrow"><svg viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"></path></svg></span></div><strong>Understand errors</strong><p>Decode tracebacks and learn how to fix common bugs.</p></button>
+                <button class="feature-card" data-feature="steps" style="--card-accent:#8b74c9"><div class="feature-card-top"><span class="feature-icon"><svg viewBox="0 0 24 24"><path d="M5 19.5A2.5 2.5 0 0 1 7.5 17H20M7.5 3H20v18H7.5A2.5 2.5 0 0 1 5 18.5v-13A2.5 2.5 0 0 1 7.5 3z"></path><path d="M9 7h7M9 10.5h6"></path></svg></span><span class="feature-arrow"><svg viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"></path></svg></span></div><strong>Learn step by step</strong><p>Build strong fundamentals, one concept at a time.</p></button>
+                <button class="feature-card" data-feature="search" style="--card-accent:#e0a930"><div class="feature-card-top"><span class="feature-icon"><svg viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.8"></circle><path d="m16 16 4.5 4.5M8 10.8h5.6"></path></svg></span><span class="feature-arrow"><svg viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"></path></svg></span></div><strong>Search Python knowledge</strong><p>Browse essentials, core skills, and popular libraries.</p></button>
+                <button class="feature-card" data-feature="practice" style="--card-accent:#4b9d8d"><div class="feature-card-top"><span class="feature-icon"><svg viewBox="0 0 24 24"><path d="M8 4h8M12 4v5l-5.4 8.4A2.3 2.3 0 0 0 8.5 21h7a2.3 2.3 0 0 0 1.9-3.6L12 9V4M8.5 15h7"></path></svg></span><span class="feature-arrow"><svg viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"></path></svg></span></div><strong>Practice problems</strong><p>Try a small challenge and test your solution safely.</p></button>
+              </div>
+              <div class="starter-prompts"><span class="starter-label">A good place to start:</span><button class="prompt-chip" data-prompt="What is a list comprehension in Python?"><svg viewBox="0 0 24 24"><path d="M8 5h8M6 9h12M8 13h8M6 17h12"></path></svg>List comprehensions</button><button class="prompt-chip" data-prompt="How does a for loop work in Python?"><svg viewBox="0 0 24 24"><path d="M5 6h14M5 12h9M5 18h5"></path><path d="m17 10 3 2-3 2"></path></svg>For loops</button><button class="prompt-chip" data-prompt="How do Python dictionaries work?"><svg viewBox="0 0 24 24"><path d="M5 5h14v14H5zM9 9h6M9 12h6M9 15h3"></path></svg>Dictionaries</button></div>
+            </section>
+            <div class="message-list hidden" id="messageList" aria-live="polite"></div>
+            <div class="typing-card hidden" id="typingIndicator"><span class="typing-dots"><i></i><i></i><i></i></span><span>Searching the Python knowledge base…</span></div>
+          </div>
+          <div class="composer-area">
+            <div class="composer-inner">
+              <form id="chatForm" class="compose-box">
+                <div class="compose-top"><textarea id="questionInput" rows="1" placeholder="Ask anything about Python..." aria-label="Ask anything about Python"></textarea></div>
+                <div class="compose-bottom"><div class="compose-tools"><span class="compose-context"><svg viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"></path></svg>Grounded in Python knowledge</span><span class="compose-separator"></span><span>Python 3 examples</span></div><div style="display:flex;align-items:center;gap:10px"><span class="compose-shortcut"><kbd>Shift</kbd> + <kbd>Enter</kbd> for a new line</span><button class="send-btn" id="sendButton" type="submit" aria-label="Send question" disabled><svg viewBox="0 0 24 24"><path d="M12 19V5m-6 6 6-6 6 6"></path></svg></button></div></div>
+              </form>
+              <div class="compose-disclaimer">PyGuide AI searches a curated, local Python guide. Code runs in a restricted sandbox — no file or network access.</div>
+            </div>
+          </div>
+        </main>
+        <aside class="right-panel" id="rightPanel" aria-label="Python concept guide"></aside>
+      </div>
+    </section>
+  </div>
+
+  <div class="modal-backdrop" id="topicModal" role="presentation">
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="topicModalTitle">
+      <div class="modal-head"><div><h2 id="topicModalTitle">Explore Python topics</h2><p>Search the curated knowledge base and jump straight into a concept.</p></div><button class="icon-btn" data-close-modal="topicModal" aria-label="Close"><svg viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"></path></svg></button></div>
+      <div class="modal-search-wrap"><label class="modal-search"><svg viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.8"></circle><path d="m16 16 4.5 4.5"></path></svg><input id="topicSearch" type="search" placeholder="Search concepts, syntax, libraries..." autocomplete="off"><span class="compose-shortcut"><kbd>Esc</kbd></span></label></div>
+      <div class="topic-results" id="topicResults"></div>
+    </section>
+  </div>
+
+  <div class="modal-backdrop" id="practiceModal" role="presentation">
+    <section class="modal practice-modal" role="dialog" aria-modal="true" aria-labelledby="practiceModalTitle">
+      <div class="modal-head"><div><h2 id="practiceModalTitle">Python practice</h2><p>A bite-sized challenge. Run your code to see what it prints.</p></div><div class="practice-head-right"><span class="practice-level" id="practiceLevel">BEGINNER</span><button class="icon-btn" data-close-modal="practiceModal" aria-label="Close"><svg viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"></path></svg></button></div></div>
+      <div class="practice-body">
+        <div class="practice-meta" id="practiceMeta">CHALLENGE 01 · FUNDAMENTALS</div>
+        <h3 class="practice-question" id="practiceQuestion"></h3>
+        <div class="practice-prompt" id="practicePrompt"></div>
+        <div class="practice-hint" id="practiceHint"></div>
+        <label class="practice-editor-label" for="practiceEditor"><span>Your Python code</span><span>Runs in a restricted sandbox</span></label>
+        <textarea id="practiceEditor" class="practice-editor" spellcheck="false" autocapitalize="off" autocomplete="off"></textarea>
+        <div class="practice-controls"><button class="btn btn-primary" id="runPractice"><svg viewBox="0 0 24 24"><path d="m8 5 11 7-11 7V5z" fill="currentColor" stroke="none"></path></svg>Run code</button><button class="btn" id="revealSolution">Show solution</button><button class="btn" id="nextPractice" style="margin-left:auto"><svg viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"></path></svg>Next challenge</button></div>
+        <pre class="practice-output" id="practiceOutput"></pre>
+        <div class="solution-box" id="solutionBox"><div class="solution-box-head">One possible solution</div><pre id="solutionCode"></pre><button class="feedback-btn" id="loadSolution" style="margin:7px 0 0 -6px;color:var(--blue)">Load solution into editor</button></div>
+      </div>
+    </section>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    const ICONS = {
+      spark: '<path d="m12 3 1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3z"/>',
+      check: '<path d="m5 12 4 4L19 6"/>',
+      code: '<path d="m8 7-5 5 5 5M16 7l5 5-5 5M14 4l-4 16"/>',
+      book: '<path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"/><path d="M4 5.5v16M8 7h8M8 10.5h6"/>',
+      list: '<path d="M4 5h16M4 12h16M4 19h16"/><circle cx="8" cy="5" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="10" cy="19" r="1.5"/>',
+      search: '<circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.5 4.5"/>',
+      arrow: '<path d="M5 12h14m-6-6 6 6-6 6"/>',
+      copy: '<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/>',
+      play: '<path d="m8 5 11 7-11 7V5z" fill="currentColor" stroke="none"/>',
+      refresh: '<path d="M20 7v5h-5M4 17v-5h5"/><path d="M5.6 9A7 7 0 0 1 18 6.5L20 12M4 12l2 5.5A7 7 0 0 0 18.4 15"/>',
+      thumbUp: '<path d="M7 10v10H4a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2h3zm0 0 5-8a3 3 0 0 1 2 3l-1 5h6a2 2 0 0 1 2 2l-1 6a2 2 0 0 1-2 2H7"/>',
+      thumbDown: '<path d="M7 14V4H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h3zm0 0 5 8a3 3 0 0 0 2-3l-1-5h6a2 2 0 0 0 2-2l-1-6a2 2 0 0 0-2-2H7"/>',
+      chevron: '<path d="m9 18 6-6-6-6"/>',
+      sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/>',
+      moon: '<path d="M20.8 13A8.5 8.5 0 0 1 11 3.2 8.5 8.5 0 1 0 20.8 13z"/>',
+      bulb: '<path d="M9 18h6m-5 3h4M8.2 14.4A6 6 0 1 1 15.8 14.4c-.9.7-1.3 1.3-1.5 2.1H9.7c-.2-.8-.6-1.4-1.5-2.1z"/>',
+      close: '<path d="m6 6 12 12M18 6 6 18"/>',
+      trash: '<path d="M4 7h16M10 11v6M14 11v6M6 7l1 14h10l1-14M9 7V4h6v3"/>',
+      clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+      flask: '<path d="M8 4h8M12 4v5l-5.4 8.4A2.3 2.3 0 0 0 8.5 21h7a2.3 2.3 0 0 0 1.9-3.6L12 9V4M8.5 15h7"/>',
+      home: '<path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-6v-7h-4v7H4a1 1 0 0 1-1-1z"/>',
+    };
+    function icon(name, size=14) { return `<svg viewBox="0 0 24 24" width="${size}" height="${size}" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${ICONS[name] || ICONS.spark}</svg>`; }
+    const logoSvg = `<svg viewBox="0 0 40 40" aria-hidden="true"><path fill="#fff" d="M19.2 4.3c-7.3 0-7.1 3.2-7.1 3.2v5.1h8v1.8H9.3s-4.4-.5-4.4 6.5 3.5 6.6 3.5 6.6h4.1v-5.2s-.2-3.2 3.8-3.2h7.1s3.6 0 3.6-4V8.5s.5-4.2-7.8-4.2zm-4.2 4.2a1.4 1.4 0 1 1 2.8 0 1.4 1.4 0 0 1-2.8 0z"/><path fill="#ffd343" d="M20.8 35.7c7.3 0 7.1-3.2 7.1-3.2v-5.1h-8v-1.8h10.8s4.4.5 4.4-6.5-3.5-6.6-3.5-6.6h-4.1v5.2s.2 3.2-3.8 3.2h-7.1s-3.6 0-3.6 4v6.6s-.5 4.2 7.8 4.2zm4.2-4.2a1.4 1.4 0 1 1-2.8 0 1.4 1.4 0 0 1 2.8 0z"/></svg>`;
+
+    const KB = [
+      {id:'basics', title:'Python basics', category:'Python Basics', keywords:['beginner','syntax','programming fundamentals','first program','getting started'], aliases:['python basics','python for beginners','getting started with python','learn python','what is python'], summary:'Python is a readable, general-purpose programming language. You write instructions in `.py` files or an interactive interpreter, then run them with Python.', explanation:'Python emphasizes readable code: indentation marks blocks, names are case-sensitive, and most statements end at the line break. A typical first step is assigning a value and passing it to `print()`.', example:'greeting = "Hello, Python!"\nprint(greeting)', output:'Hello, Python!', tip:'Start with small expressions in the interpreter, then save related code in a `.py` file.', related:['Variables','Print and output','Indentation']},
+      {id:'variables', title:'Variables and assignment', category:'Python Basics', keywords:['variable','assignment','name','store a value','equals sign'], aliases:['what is a variable','assign a value','create a variable','how do variables work'], summary:'A variable is a name bound to an object. Use `=` to assign a value; Python infers the value’s type at runtime.', explanation:'Choose descriptive names such as `total_price`. Names can be reassigned, and the name itself does not permanently declare a type. By convention, Python variables use `snake_case`.', example:'language = "Python"\nversion = 3\nprint(f"{language} {version}")', output:'Python 3', tip:'Use lowercase `snake_case` for variable names, and give each name one clear purpose.', related:['Python data types','Strings','Type conversion']},
+      {id:'print', title:'Print and output', category:'Python Basics', keywords:['print statement','display','console','output','show text'], aliases:['how to print in python','print to console','display output','print function'], summary:'`print()` writes text representations of its arguments to standard output, usually the terminal.', explanation:'Pass one or more values to `print()`. It separates multiple values with a space by default and ends with a newline. The `sep` and `end` parameters customize that behavior.', example:'name = "Ada"\nprint("Hello", name)\nprint("ready", end="!")', output:'Hello Ada\nready!', tip:'Use `print()` to inspect values while learning; use a debugger or logging for larger programs.', related:['Variables','Strings','Debugging Python']},
+      {id:'indentation', title:'Indentation and code blocks', category:'Python Basics', keywords:['whitespace','indent','block','spaces','syntax'], aliases:['why indentation matters','python indentation','indentation error','code block'], summary:'Python uses indentation to define blocks of code instead of curly braces.', explanation:'Statements belonging to a function, loop, class, or condition must be indented consistently under the header ending in `:`. Four spaces per level is the standard convention; avoid mixing tabs and spaces.', example:'score = 82\nif score >= 60:\n    print("Passed")\nelse:\n    print("Try again")', output:'Passed', tip:'In an editor, enable four-space indentation and let it insert spaces when you press Tab.', related:['If statements','For loops','Functions']},
+      {id:'input', title:'Getting user input', category:'Python Basics', keywords:['input function','keyboard input','read input','user prompt'], aliases:['how to get input in python','input from user','input function'], summary:'`input()` reads a line of text from the user and returns it as a string.', explanation:'The optional prompt is displayed before Python waits for a line. Because the result is always text, convert it with `int()` or `float()` before doing numeric calculations. Interactive input is not enabled in PyGuide’s code sandbox.', example:'age_text = "28"  # imagine this came from input()\nage = int(age_text)\nprint(age + 1)', output:'29', tip:'Validate user input before converting it; invalid text passed to `int()` raises `ValueError`.', related:['Type conversion','Strings','Exceptions']},
+      {id:'conversion', title:'Type conversion', category:'Python Basics', keywords:['cast','convert','int','float','str','parse'], aliases:['convert string to integer','cast a value','type casting','convert types in python'], summary:'Use constructors such as `int()`, `float()`, and `str()` to convert compatible values between common types.', explanation:'Conversions create a value of the requested type when the input is valid. For example, `int("28")` parses digits as an integer, while `str(28)` creates text. Invalid conversions can raise `ValueError`.', example:'price_text = "12.50"\nprice = float(price_text)\nprint(price * 2)', output:'25.0', tip:'Do not assume conversion always succeeds—handle `ValueError` when the source is user-provided.', related:['Python data types','Strings','Exceptions']},
+      {id:'data-types', title:'Python data types', category:'Data Types', keywords:['int','float','str','bool','none','type system','primitive'], aliases:['python data types','types in python','what types are there','built in types'], summary:'Python includes numeric types (`int`, `float`), text (`str`), booleans (`bool`), and collections such as `list`, `tuple`, `dict`, and `set`.', explanation:'Every value is an object with a type. A type determines what operations make sense: numbers can be added, strings can be joined, and dictionaries map keys to values. `None` represents the absence of a value.', example:'count = 3\nratio = 0.5\nlabel = "ready"\nactive = True\nprint(count + 2, label, active)', output:'5 ready True', tip:'When in doubt, inspect a value with `type(value)` in your own Python session.', related:['Strings','Lists','Dictionaries']},
+      {id:'strings', title:'Strings', category:'Data Types', keywords:['text','characters','string methods','quotes','formatting','f string'], aliases:['python strings','string methods','join strings','uppercase string','text in python'], summary:'A string (`str`) is an immutable sequence of Unicode characters, written between single, double, or triple quotes.', explanation:'Use `+` to concatenate strings, indexing or slicing to select characters, and methods such as `.lower()` or `.split()` to create transformed values. An f-string inserts expressions into text with `{}`.', example:'name = "Ada"\nmessage = f"Hello, {name}!"\nprint(message.upper())', output:'HELLO, ADA!', tip:'Strings are immutable: methods return a new string rather than changing the original.', related:['Slicing','Lists','Type conversion']},
+      {id:'lists', title:'Lists', category:'Data Types', keywords:['array','ordered collection','mutable sequence','append','items'], aliases:['python list','create a list','add item to list','list in python','list methods'], summary:'A list is an ordered, mutable collection that can hold values of different types.', explanation:'Create a list with square brackets, access items by zero-based index, and use methods such as `.append()` to modify it. A list can grow or shrink after creation.', example:'fruits = ["apple", "pear"]\nfruits.append("plum")\nprint(fruits[0])\nprint(fruits)', output:'apple\n[\'apple\', \'pear\', \'plum\']', tip:'Use a list when you need an ordered collection that may change; use a tuple for a fixed grouping.', related:['Tuples','List comprehensions','Slicing']},
+      {id:'tuples', title:'Tuples', category:'Data Types', keywords:['immutable sequence','fixed collection','packing','unpacking'], aliases:['python tuple','what is a tuple','tuple in python','tuple unpacking'], summary:'A tuple is an ordered, immutable sequence, commonly used for a fixed group of related values.', explanation:'Write tuple items separated by commas, usually inside parentheses. A one-item tuple needs a trailing comma: `(5,)`. You can unpack a tuple into names when the number of targets matches.', example:'point = (4, 7)\nx, y = point\nprint(x, y)', output:'4 7', tip:'Immutability is shallow: a tuple cannot replace its items, but a mutable object inside it may still change.', related:['Lists','List vs tuple','Dictionaries']},
+      {id:'dictionaries', title:'Dictionaries', category:'Data Types', keywords:['dict','key value','mapping','lookup','get','hash map'], aliases:['python dictionary','how do dictionaries work','dict in python','key value pairs','add key to dictionary'], summary:'A dictionary maps unique, hashable keys to values, making lookups by key convenient.', explanation:'Create a dictionary with `{key: value}` pairs. Read a value with `data[key]`, or use `data.get(key)` when a key may be absent. Dictionaries preserve insertion order in modern Python.', example:'person = {"name": "Ada", "role": "engineer"}\nperson["city"] = "London"\nprint(person.get("name"))\nprint(len(person))', output:'Ada\n3', tip:'Use `.get(key, default)` when a missing key should return a fallback instead of raising `KeyError`.', related:['Sets','List vs tuple','Dictionary comprehensions']},
+      {id:'sets', title:'Sets', category:'Data Types', keywords:['unique values','duplicates','membership','set operations','unordered'], aliases:['python set','remove duplicates','set in python','unique items'], summary:'A set is a collection of distinct hashable values, useful for membership tests and set operations.', explanation:'Create a set with braces or `set()`. Duplicate values collapse into one. Sets do not promise positional indexing; use `in` to test membership, or combine sets with union (`|`) and intersection (`&`).', example:'colors = {"blue", "green", "blue"}\nprint(len(colors))\nprint("blue" in colors)', output:'2\nTrue', tip:'Use `set(items)` to remove duplicates when order does not matter.', related:['Dictionaries','Lists','Python data types']},
+      {id:'list-vs-tuple', title:'List vs tuple', category:'Data Types', keywords:['compare list tuple','mutable immutable','difference','when to use'], aliases:['list vs tuple','difference between list and tuple','list or tuple','tuple versus list'], summary:'Lists are mutable and written with `[]`; tuples are immutable and commonly written with `()` or commas.', explanation:'Choose a **list** when the collection will be updated (for example, items in a queue). Choose a **tuple** for a fixed record or values that should not be reassigned. Both are ordered and support indexing.', example:'shopping = ["tea", "rice"]\ncoordinate = (13.08, 80.27)\nshopping.append("fruit")\nprint(shopping)\nprint(coordinate[0])', output:'[\'tea\', \'rice\']\n13.08', tip:'The choice communicates intent: mutable sequence versus fixed grouping—not simply “fast” versus “slow.”', related:['Lists','Tuples','Dictionaries']},
+      {id:'slicing', title:'Indexing and slicing', category:'Data Types', keywords:['slice','range of items','index','substring','step'], aliases:['python slicing','slice a list','get part of a list','string slice','negative index'], summary:'Indexing selects one item; slicing selects a range using `sequence[start:stop:step]`.', explanation:'Indexes start at zero, and negative indexes count from the end. A slice includes `start` but stops before `stop`; omitted bounds use the beginning or end of the sequence. Slicing makes a new sequence.', example:'letters = ["a", "b", "c", "d", "e"]\nprint(letters[1:4])\nprint(letters[::-1])', output:"['b', 'c', 'd']\n['e', 'd', 'c', 'b', 'a']", tip:'The exclusive stop index is a common source of off-by-one errors.', related:['Lists','Strings','For loops']},
+      {id:'list-comprehensions', title:'List comprehensions', category:'Data Types', keywords:['comprehension','transform list','filtering','compact loop','square numbers'], aliases:['list comprehension','what is a list comprehension','list comprehensions in python','comprehension syntax'], summary:'A list comprehension builds a new list from an iterable in one concise expression, with optional filtering.', explanation:'Read `[expression for item in iterable if condition]` from left to right: take each item, optionally keep only those meeting the condition, then evaluate the expression. Prefer a regular loop when the logic becomes hard to scan.', example:'squares = [number ** 2 for number in range(1, 6)]\nprint(squares)', output:'[1, 4, 9, 16, 25]', tip:'A useful rule: if the comprehension needs several nested clauses or side effects, write a normal `for` loop instead.', related:['For loops','Lists','Dictionary comprehensions']},
+      {id:'dict-comprehensions', title:'Dictionary comprehensions', category:'Data Types', keywords:['dictionary comprehension','dict comprehension','key value expression','mapping'], aliases:['dictionary comprehension','dict comprehension','build dictionary from iterable'], summary:'A dictionary comprehension creates a dictionary from an iterable using `{key: value for item in iterable}`.', explanation:'Like a list comprehension, it can include a filter. The key expression must produce hashable keys; if two items produce the same key, the later value replaces the earlier one.', example:'words = ["cat", "python", "loop"]\nlengths = {word: len(word) for word in words}\nprint(lengths["python"])', output:'6', tip:'Use a dict comprehension for a clear mapping transformation, not as a substitute for complex multi-step logic.', related:['Dictionaries','List comprehensions','For loops']},
+      {id:'conditionals', title:'If, elif, and else', category:'Control Flow', keywords:['conditional','branch','comparison','boolean','decision'], aliases:['if statement','if else in python','conditional statements','elif','branching'], summary:'Conditional statements choose which indented block to execute based on a truth value.', explanation:'Use `if` for the first condition, zero or more `elif` branches, and an optional `else` fallback. Conditions can combine comparisons with `and`, `or`, and `not`.', example:'temperature = 19\nif temperature >= 25:\n    print("warm")\nelif temperature >= 15:\n    print("mild")\nelse:\n    print("cool")', output:'mild', tip:'Use `==` to compare values; a single `=` assigns a value.', related:['Boolean values','For loops','While loops']},
+      {id:'for-loops', title:'For loops', category:'Control Flow', keywords:['iterate','iteration','repeat','loop through','sequence'], aliases:['for loop','how does a for loop work','for loop in python','iterate over items','loop through a list'], summary:'A `for` loop runs a block once for each item in an iterable, such as a list or a `range`.', explanation:'Python’s `for` loop is a “for each” loop: on each iteration, the loop variable is assigned the next item. Indent the repeated statements under the line ending with `:`.', example:'for i in range(5):\n    print(i)', output:'0\n1\n2\n3\n4', tip:'Iterate over a collection directly when you need its values; use `enumerate(items)` when you also need an index.', related:['Range','While loops','Break and continue']},
+      {id:'while-loops', title:'While loops', category:'Control Flow', keywords:['repeat while','condition loop','iteration','loop until'], aliases:['while loop','while loops in python','loop until condition','how does while work'], summary:'A `while` loop repeats its indented block as long as its condition is true.', explanation:'The condition is checked before each iteration. Make sure the loop body eventually changes something that can make the condition false, otherwise the loop may run forever.', example:'count = 1\nwhile count <= 3:\n    print(count)\n    count += 1', output:'1\n2\n3', tip:'When you know how many items you need to visit, a `for` loop is usually simpler.', related:['For loops','Break and continue','Boolean values']},
+      {id:'range', title:'The range() function', category:'Control Flow', keywords:['sequence of integers','loop counter','start stop step'], aliases:['range function','python range','range in for loop','range start stop step'], summary:'`range()` represents an immutable sequence of integers, commonly used to repeat a loop a known number of times.', explanation:'`range(stop)` starts at zero and excludes `stop`. You can provide `range(start, stop, step)`; the step may be negative, but cannot be zero. It produces values lazily rather than building a list.', example:'evens = list(range(2, 8, 2))\nprint(evens)', output:'[2, 4, 6]', tip:'For iterating a list’s values, loop over the list itself instead of `range(len(list))` unless the index is needed.', related:['For loops','Lists','Enumerate and zip']},
+      {id:'loop-control', title:'Break and continue', category:'Control Flow', keywords:['exit loop','skip iteration','loop control','break statement','continue statement'], aliases:['break and continue','break in python','continue in python','stop loop early','skip loop iteration'], summary:'`break` exits the nearest loop; `continue` skips to the next iteration of that loop.', explanation:'Use `break` when a search or condition is complete. Use `continue` to skip one item while keeping the loop running. In nested loops, either statement affects only the innermost loop.', example:'for number in range(6):\n    if number == 2:\n        continue\n    if number == 5:\n        break\n    print(number)', output:'0\n1\n3\n4', tip:'A well-placed condition can sometimes make loop-control statements unnecessary and improve readability.', related:['For loops','While loops','If statements']},
+      {id:'functions', title:'Functions', category:'Functions', keywords:['def','reusable code','callable','parameters','function definition'], aliases:['python function','define a function','how do functions work','def keyword','write a function'], summary:'A function is a named, reusable block of code that can accept inputs and optionally return a result.', explanation:'Define a function with `def`, a name, parentheses, and a colon. Its body is indented. The body runs when the function is called, not when it is defined.', example:'def greet(name):\n    print(f"Hello, {name}!")\n\ngreet("Ada")', output:'Hello, Ada!', tip:'Keep a function focused on one task and choose a name that describes what it does.', related:['Parameters and arguments','Return values','Scope']},
+      {id:'parameters', title:'Parameters and arguments', category:'Functions', keywords:['positional','keyword argument','default parameter','function input'], aliases:['parameters vs arguments','function parameters','default arguments','keyword arguments in python'], summary:'Parameters are names in a function definition; arguments are the values supplied when the function is called.', explanation:'Python supports positional and keyword arguments. A parameter can have a default value, allowing callers to omit it. Parameters with defaults must follow required parameters.', example:'def greet(name, prefix="Hello"):\n    print(f"{prefix}, {name}!")\n\ngreet("Ada")\ngreet("Lin", prefix="Welcome")', output:'Hello, Ada!\nWelcome, Lin!', tip:'Avoid mutable objects such as lists as default parameter values; use `None` and create a fresh object inside instead.', related:['Functions','Return values','Type conversion']},
+      {id:'return', title:'Return values', category:'Functions', keywords:['return statement','function result','output from function','none'], aliases:['return in python','return value','difference between print and return','function returns none'], summary:'`return` sends a value back to the caller and immediately ends the current function call.', explanation:'A function can return any Python object, including a tuple for multiple related values. If execution reaches the end without `return`, Python returns `None`. Printing displays a value but does not return it.', example:'def area(width, height):\n    return width * height\n\nresult = area(4, 3)\nprint(result)', output:'12', tip:'Return data from reusable functions; let the caller decide whether to print, save, or transform it.', related:['Functions','Parameters and arguments','Python data types']},
+      {id:'lambda', title:'Lambda expressions', category:'Functions', keywords:['anonymous function','small function','key sort','lambda keyword'], aliases:['lambda function','lambda in python','anonymous function python','lambda expression'], summary:'A `lambda` creates a small anonymous function from a single expression.', explanation:'The expression’s value becomes the function’s return value. Lambdas are handy for short callbacks or sort keys, but a regular `def` is clearer for multi-step logic or a meaningful reusable function.', example:'double = lambda number: number * 2\nprint(double(6))', output:'12', tip:'Prefer `def` when the expression needs explanation or the function will be reused by name.', related:['Functions','Sorting lists','List comprehensions']},
+      {id:'scope', title:'Variable scope', category:'Functions', keywords:['local global variable','namespace','local scope','global keyword'], aliases:['scope in python','local vs global','where variables are visible','global variable'], summary:'Scope determines where a name can be accessed. Names assigned inside a function are local by default.', explanation:'Python resolves names using the LEGB order: Local, Enclosing, Global, Built-in. Reading a global name is allowed inside a function, but assigning to it requires `global`; in most designs, passing values and returning results is clearer.', example:'message = "outer"\ndef show_message():\n    message = "local"\n    print(message)\n\nshow_message()\nprint(message)', output:'local\nouter', tip:'Prefer local variables and explicit function arguments over shared mutable global state.', related:['Functions','Return values','Python basics']},
+      {id:'recursion', title:'Recursion', category:'Functions', keywords:['recursive function','base case','call itself','factorial'], aliases:['recursion in python','recursive function','function calls itself','base case'], summary:'Recursion is a technique where a function solves a problem by calling itself on a smaller case.', explanation:'A recursive function needs a **base case** that stops the calls, plus a recursive step that moves toward it. Python limits recursion depth, so an iterative approach is often better for very deep work.', example:'def factorial(n):\n    if n <= 1:\n        return 1\n    return n * factorial(n - 1)\n\nprint(factorial(5))', output:'120', tip:'Trace a small input by hand and verify that every recursive path reaches the base case.', related:['Functions','If statements','Return values']},
+      {id:'generators', title:'Generators and yield', category:'Functions', keywords:['yield','lazy iteration','generator function','memory efficient'], aliases:['python generator','yield keyword','generator vs list','lazy iterator'], summary:'A generator produces values one at a time, pausing at each `yield` and resuming when the next value is requested.', explanation:'Calling a generator function returns an iterator; its body starts when you iterate over it. Generators can represent large or streamed sequences without keeping every result in memory at once.', example:'def countdown(start):\n    while start > 0:\n        yield start\n        start -= 1\n\nprint(list(countdown(3)))', output:'[3, 2, 1]', tip:'Use `yield` when consumers can process values incrementally rather than needing a complete list.', related:['Functions','For loops','List comprehensions']},
+      {id:'classes', title:'Classes and objects', category:'OOP', keywords:['object oriented programming','instance','attribute','method','__init__'], aliases:['python class','classes and objects','object oriented python','oop in python','self in python'], summary:'A class defines a kind of object; an instance stores its own data and can use behavior defined by the class.', explanation:'Define a class with `class`. Methods receive the instance as their first parameter by convention named `self`; `__init__` initializes new instances. Use objects when related state and behavior belong together.', example:'class Dog:\n    def __init__(self, name):\n        self.name = name\n\n    def speak(self):\n        return f"{self.name} says woof!"\n\npet = Dog("Milo")\nprint(pet.speak())', output:'Milo says woof!', tip:'A class is useful when a small group of functions and data naturally travel together; not every program needs one.', related:['Inheritance','Functions','Python data types']},
+      {id:'inheritance', title:'Inheritance', category:'OOP', keywords:['subclass','parent class','child class','override','super'], aliases:['python inheritance','inheritance in python','subclass','override a method'], summary:'Inheritance lets a new class derive behavior from a base class and specialize or override selected methods.', explanation:'A subclass lists its base class in parentheses. It can add methods or override inherited ones; `super()` can delegate to the base implementation. Prefer composition when a “has-a” relationship is a better fit.', example:'class Animal:\n    def speak(self):\n        return "sound"\n\nclass Dog(Animal):\n    def speak(self):\n        return "woof"\n\nprint(Dog().speak())', output:'woof', runAllowed:false, runNote:'This sandbox allows simple classes but not inheritance. Run this example in a local Python interpreter.', tip:'Keep inheritance hierarchies shallow and make sure a subclass can stand in for its base type.', related:['Classes and objects','Functions','Python basics']},
+      {id:'exceptions', title:'Try and except', category:'Exceptions', keywords:['handle errors','exception handling','try block','except block','finally','raise'], aliases:['try except in python','handle exceptions','exception handling python','catch an error','raise an exception'], summary:'`try` runs code that may fail; matching `except` blocks handle specified exceptions without stopping the whole program.', explanation:'Catch the narrow exception you expect, such as `ValueError`, rather than hiding every problem with a bare `except`. An optional `finally` block runs whether an exception happened or not; use `raise` to signal an invalid condition.', example:'text = "not-a-number"\ntry:\n    value = int(text)\nexcept ValueError:\n    print("Please provide a whole number.")', output:'Please provide a whole number.', tip:'Do not use exceptions to silently ignore bugs; handle errors you can recover from and keep the message useful.', related:['Common Python errors','Debugging Python','Type conversion']},
+      {id:'common-errors', title:'Common Python errors', category:'Exceptions', keywords:['typeerror','nameerror','indexerror','keyerror','syntaxerror','traceback','exception'], aliases:['common python errors','typeerror','nameerror','indexerror','keyerror','modulenotfounderror','attributeerror','what does this error mean'], summary:'Python exceptions identify what went wrong: `NameError` is an unknown name, `TypeError` is an unsupported operation, and `IndexError` is an out-of-range sequence index.', explanation:'Read the last line of a traceback first for the exception type and message, then inspect the indicated line in your code. Common fixes include checking spelling (`NameError`), converting compatible types (`TypeError`), and checking bounds or keys (`IndexError`, `KeyError`).', example:'try:\n    total = "5" + 2\nexcept TypeError as error:\n    print("TypeError:", error)', output:'TypeError: can only concatenate str (not "int") to str', tip:'Fix the earliest relevant error first—later tracebacks may be consequences of that first failure.', related:['Try and except','Debugging Python','Type conversion']},
+      {id:'debugging', title:'Debugging Python', category:'Exceptions', keywords:['debug','traceback','inspect','breakpoint','bug','fix code'], aliases:['debug python code','read a traceback','debugging python','how to fix an error','understand a python error'], summary:'Debugging means narrowing a problem to its cause, checking the values involved, and verifying a small correction.', explanation:'Start with the exception type and message at the bottom of the traceback. Check the reported line and nearby inputs. Use a minimal reproducible example, `print()` for quick inspection, or Python’s built-in `breakpoint()` in a local session to step through values.', example:'def divide(a, b):\n    return a / b\n\ntry:\n    print(divide(10, 0))\nexcept ZeroDivisionError:\n    print("The divisor cannot be zero.")', output:'The divisor cannot be zero.', tip:'Change one thing at a time, rerun the smallest failing example, and add a regression test when you can.', related:['Common Python errors','Try and except','Functions']},
+      {id:'modules', title:'Modules and imports', category:'Modules', keywords:['import','module','package','reuse code','standard library'], aliases:['python modules','import in python','how imports work','import a module','module vs package'], summary:'A module is a Python file that can define reusable names; `import` makes a module’s public names available to another file.', explanation:'Use `import math` and access a function as `math.sqrt(16)`, or import a specific approved name with `from math import sqrt`. Python searches locations on `sys.path`. A directory of related modules can form a package.', example:'import math\n\nprint(math.sqrt(81))', output:'9.0', tip:'Guard script-only startup code with `if __name__ == "__main__":` so importing the module does not run it.', related:['Virtual environments and pip','Python standard library','Functions']},
+      {id:'venv', title:'Virtual environments and pip', category:'Modules', keywords:['venv','pip install','dependencies','environment','package manager'], aliases:['python virtual environment','venv in python','pip install','install a package','manage dependencies'], summary:'A virtual environment isolates project dependencies; `pip` installs packages into the active environment.', explanation:'Create one with `python -m venv .venv`, activate it for your operating system, then install packages with `python -m pip install package-name`. Record dependencies for reproducible setup. PyGuide’s runner intentionally does not install packages.', example:'# Create an isolated environment (run in your terminal):\npython -m venv .venv\n# Then activate it and install a package:\npython -m pip install requests', output:'Commands shown for a terminal; no files are changed in this sandbox.', runAllowed:false, runNote:'These are terminal commands, not a runnable Python snippet.', tip:'Use one environment per project and avoid installing project dependencies into your system Python.', related:['Modules and imports','Python standard library','Pandas']},
+      {id:'file-handling', title:'File handling', category:'File Handling', keywords:['read file','write file','open','with statement','context manager','text file'], aliases:['read and write files in python','file handling python','open a file','write to a file','with open'], summary:'Use `open()` to work with a file; the `with` statement closes it automatically when the block finishes.', explanation:'Choose a mode such as `"r"` to read, `"w"` to overwrite, or `"a"` to append. Specify `encoding="utf-8"` for text files. PyGuide’s sandbox disables filesystem access, so run file examples locally.', example:'# Run locally; file access is disabled in this sandbox.\nwith open("notes.txt", "w", encoding="utf-8") as file:\n    file.write("Practice Python\\n")\n\nwith open("notes.txt", encoding="utf-8") as file:\n    print(file.read())', output:'Practice Python', runAllowed:false, runNote:'File and filesystem access are disabled in the safe runner. Run this snippet in a local Python project.', tip:'Use `pathlib.Path` for clearer path handling in real projects, and handle expected `OSError` exceptions.', related:['Exceptions','Modules and imports','Strings']},
+      {id:'standard-library', title:'Python standard library', category:'Libraries', keywords:['built in modules','stdlib','math','statistics','pathlib','json'], aliases:['python standard library','built in python libraries','standard library modules','stdlib'], summary:'The Python standard library ships with Python and provides modules for common tasks without a separate package install.', explanation:'Useful modules include `math` for numeric functions, `statistics` for simple summaries, `json` for JSON data, `pathlib` for paths, and `datetime` for dates. This teaching runner permits a small subset of `math` and `statistics` only.', example:'import statistics\n\nvalues = [2, 4, 4, 8]\nprint(statistics.mean(values))', output:'4.5', tip:'Check the official library documentation for a module’s supported behavior and version details.', related:['Modules and imports','NumPy','Pandas']},
+      {id:'pandas', title:'Pandas and DataFrames', category:'Pandas', keywords:['data analysis','dataframe','series','read csv','filter rows','tabular'], aliases:['pandas python','pandas dataframe','what is a dataframe','read csv pandas','filter pandas rows'], summary:'Pandas is a third-party Python library for working with labeled, tabular data using `Series` and `DataFrame` objects.', explanation:'A `DataFrame` stores columns that can have different data types. Common workflows include loading a CSV with `read_csv`, inspecting columns, filtering rows with a boolean condition, and grouping data for summaries. Install pandas separately with pip.', example:'import pandas as pd\n\nframe = pd.DataFrame({"name": ["Ada", "Lin"], "score": [92, 85]})\nprint(frame[frame["score"] >= 90]["name"].tolist())', output:"['Ada']", runAllowed:false, runNote:'Third-party packages are not installed or imported in the safe runner. Try this in an environment with pandas installed.', tip:'For larger projects, validate column types and missing values as part of the data-loading step.', related:['NumPy arrays','Python data types','Matplotlib']},
+      {id:'numpy', title:'NumPy arrays', category:'NumPy', keywords:['numerical computing','ndarray','vectorization','broadcasting','array'], aliases:['numpy python','numpy array','what is numpy','numpy broadcasting','vectorized operations'], summary:'NumPy is a third-party library for fast numerical work with multidimensional, homogeneous `ndarray` objects.', explanation:'NumPy arrays support vectorized operations, broadcasting between compatible shapes, and a large set of numerical routines. Unlike Python lists, array arithmetic generally applies element-wise. Install NumPy separately with pip.', example:'import numpy as np\n\nvalues = np.array([1, 2, 3])\nprint((values * 2).tolist())', output:'[2, 4, 6]', runAllowed:false, runNote:'Third-party packages are not installed or imported in the safe runner. Try this in an environment with NumPy installed.', tip:'Check `.shape` and `dtype` when array operations give surprising results.', related:['Pandas and DataFrames','Matplotlib','Python lists']},
+      {id:'matplotlib', title:'Matplotlib plots', category:'Matplotlib', keywords:['visualization','chart','plot','pyplot','graph'], aliases:['matplotlib python','make a plot','plot a graph in python','matplotlib pyplot','visualize data'], summary:'Matplotlib is a plotting library for creating charts and figures from Python data.', explanation:'The common `matplotlib.pyplot` interface creates a figure, draws data with calls such as `plot()` or `bar()`, adds labels, and displays the result with `show()`. It is often paired with NumPy or pandas. Install it separately with pip.', example:'import matplotlib.pyplot as plt\n\nmonths = [1, 2, 3]\nvisitors = [12, 18, 15]\nplt.plot(months, visitors, marker="o")\nplt.title("Monthly visitors")\nplt.show()', output:'Opens a line plot when run in a local Python environment.', runAllowed:false, runNote:'Plotting libraries and graphical display are not available in this safe runner.', tip:'Label axes and include units so a chart can be understood without extra context.', related:['Pandas and DataFrames','NumPy arrays','Scikit-learn']},
+      {id:'sklearn', title:'Scikit-learn basics', category:'Scikit-learn', keywords:['machine learning','fit predict','estimator','model','train test split'], aliases:['scikit learn python','sklearn','fit and predict','train a model python','machine learning basics'], summary:'Scikit-learn provides consistent tools for classical machine-learning workflows, from preprocessing to model evaluation.', explanation:'A typical estimator follows `fit(X, y)` to learn from training features and labels, then `predict(X_new)` to produce predictions. Split data into training and test sets to evaluate performance on unseen examples. Install scikit-learn separately with pip.', example:'from sklearn.model_selection import train_test_split\nfrom sklearn.ensemble import RandomForestClassifier\n\nX_train, X_test, y_train, y_test = train_test_split(X, y, random_state=42)\nmodel = RandomForestClassifier(random_state=42)\nmodel.fit(X_train, y_train)\npredictions = model.predict(X_test)', output:'`predictions` contains one predicted class for each row in `X_test`.', runAllowed:false, runNote:'Scikit-learn and example data are not available in the safe runner.', tip:'Keep preprocessing inside a pipeline and evaluate on data that was not used to fit the model.', related:['Pandas and DataFrames','NumPy arrays','Python functions']},
+    ];
+
+    const CATEGORY_ORDER = ['Python Basics', 'Data Types', 'Control Flow', 'Functions', 'OOP', 'Modules', 'File Handling', 'Exceptions', 'Libraries', 'Pandas', 'NumPy', 'Matplotlib', 'Scikit-learn'];
+    const STOP = new Set(('what is are a an the in on to of for how does do work works explain about with from use using can could would please python show tell me i my you your get make create difference between and or this that').split(' '));
+    const SYNONYMS = {loop:['iterate','iteration','repeat'], iterable:['list','tuple','range'], function:['def','method'], dict:['dictionary'], array:['list','numpy'], error:['exception','traceback','bug'], class:['object','oop'], comprehension:['compact','transform'], package:['library','module'], parameter:['argument','input']};
+    const memory = { chats: loadJSON('pyguide-chats', []), learned: new Set(loadJSON('pyguide-learned', [])), visited: new Set(loadJSON('pyguide-visited', [])), activeId: storageGet('pyguide-active') || null, theme: storageGet('pyguide-theme') || 'light' };
+    let activeChatId = memory.activeId;
+    const pendingByChat = new Map();
+    let toastTimer = null;
+    let practiceIndex = 0;
+    const codeRegistry = Object.create(null);
+
+    function storageGet(key) { try { return localStorage.getItem(key); } catch { return null; } }
+    function storageSet(key, value) { try { localStorage.setItem(key, value); } catch { /* Storage may be unavailable in a private or sandboxed frame. */ } }
+    function storageRemove(key) { try { localStorage.removeItem(key); } catch { /* Optional persistence only. */ } }
+    function loadJSON(key, fallback) { try { const value = JSON.parse(storageGet(key)); return value ?? fallback; } catch { return fallback; } }
+    function saveAppState() {
+      storageSet('pyguide-chats', JSON.stringify(memory.chats.slice(0, 30)));
+      storageSet('pyguide-learned', JSON.stringify([...memory.learned]));
+      storageSet('pyguide-visited', JSON.stringify([...memory.visited]));
+      if (activeChatId) storageSet('pyguide-active', activeChatId); else storageRemove('pyguide-active');
+    }
+    function normalize(text) { return String(text || '').toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9_]+/g, ' ').trim().replace(/\s+/g, ' '); }
+    function tokenList(text) { return normalize(text).split(' ').filter(t => t && !STOP.has(t)).map(t => t.length > 4 && t.endsWith('ies') ? t.slice(0, -3) + 'y' : t.length > 4 && t.endsWith('ing') ? t.slice(0, -3) : t.length > 3 && t.endsWith('s') ? t.slice(0, -1) : t); }
+    function entryTerms(entry) { return tokenList([entry.title, entry.category, ...(entry.keywords || [])].join(' ')); }
+    function scoreEntry(entry, query) {
+      const q = normalize(query); const qTokens = [...new Set(tokenList(query))]; const title = normalize(entry.title); const titleTokens = tokenList(entry.title); const terms = entryTerms(entry); const aliases = (entry.aliases || []).map(normalize);
+      let score = 0; let covered = 0;
+      if (title && q.includes(title)) score += 9;
+      for (const alias of aliases) if (alias.length > 3 && q.includes(alias)) score += Math.min(8, 5 + alias.split(' ').length * .45);
+      for (const token of qTokens) {
+        let match = false;
+        if (titleTokens.includes(token)) { score += 3.1; match = true; }
+        else if (terms.includes(token)) { score += 1.65; match = true; }
+        const expansions = SYNONYMS[token] || [];
+        if (!match && expansions.some(word => terms.includes(word) || titleTokens.includes(word))) { score += 1.05; match = true; }
+        if (match) covered++;
+      }
+      if (qTokens.length) score += (covered / qTokens.length) * 1.7;
+      if (/\b(traceback|bug|debug|debugging)\b/.test(q) && entry.id === 'debugging') score += 4;
+      if (/\b(error|exception|typeerror|nameerror|keyerror|indexerror|syntaxerror)\b/.test(q) && entry.id === 'common-errors') score += 3.5;
+      return score;
+    }
+    function rankEntries(query) { return KB.map(entry => ({entry, score: scoreEntry(entry, query)})).sort((a,b) => b.score-a.score); }
+    function answerQuestion(query, variant=0) {
+      const ranked = rankEntries(query); const best = ranked[0];
+      if (!best || best.score < 3.2) {
+        const suggestions = ranked.slice(0, 4).map(x => x.entry);
+        return {kind:'fallback', title:'Let’s find the right Python concept', category:'Knowledge search', summary:'I couldn’t confidently match that question to one topic in the curated guide.', explanation:'Try including a specific Python term, error name, or library. The guide covers Python fundamentals, data types, loops, functions, object-oriented programming, files, exceptions, and popular data libraries.', suggestions:suggestions.map(x=>x.title), related:suggestions.slice(0,3).map(x=>x.title), tip:'For example: “What is a list comprehension?” or “How do I handle a KeyError?”'};
+      }
+      const entry = best.entry; memory.visited.add(entry.id); saveAppState();
+      const explanation = entry.explanations?.length ? entry.explanations[variant % entry.explanations.length] : entry.explanation;
+      const tips = entry.tips || [entry.tip];
+      return {kind:'knowledge', docId:entry.id, title:entry.title, category:entry.category, summary:entry.summary, explanation, example:entry.example, output:entry.output, related:entry.related || [], tip:tips[variant % tips.length], runAllowed:entry.runAllowed !== false, runNote:entry.runNote || '', variant};
+    }
+    function currentChat() { return memory.chats.find(c => c.id === activeChatId) || null; }
+    function makeId() { return 'c' + Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+    function ensureChat() {
+      let chat = currentChat();
+      if (!chat) {
+        chat = {id:makeId(), title:'New chat', updated:Date.now(), messages:[]};
+        memory.chats.unshift(chat); activeChatId = chat.id;
+      }
+      return chat;
+    }
+    function relativeTime(ts) { const diff = Date.now() - (ts || Date.now()); if (diff < 60_000) return 'now'; if (diff < 3_600_000) return Math.floor(diff/60_000)+'m'; if (diff < 86_400_000) return Math.floor(diff/3_600_000)+'h'; return Math.floor(diff/86_400_000)+'d'; }
+    function setThreadTitle(title) { const chat = currentChat(); if (!chat) return; chat.title = title.trim().slice(0, 42) || 'New chat'; document.getElementById('threadTitle').textContent = chat.title; }
+    function escapeHTML(value) { return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch])); }
+    function highlightPython(source) {
+      const pattern = /(#[^\n]*|"""[\s\S]*?"""|'''[\s\S]*?'''|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|\b(?:def|class|return|yield|if|elif|else|for|while|in|break|continue|try|except|finally|raise|with|as|import|from|pass|and|or|not|is|lambda|global|nonlocal|assert|True|False|None)\b|\b(?:print|range|len|list|dict|set|tuple|int|float|str|sum|min|max|sorted|enumerate|zip|abs|round|bool|input)\b|\b\d+(?:\.\d+)?\b|[+\-*\/%=<>!]+|\b[A-Za-z_]\w*(?=\s*\())/g;
+      let result=''; let last=0; let match;
+      while ((match=pattern.exec(source)) !== null) {
+        result += escapeHTML(source.slice(last, match.index)); const token=match[0]; let type='';
+        if (token.startsWith('#')) type='comment';
+        else if (/^(?:"|')/.test(token)) type='string';
+        else if (/^\d/.test(token)) type='number';
+        else if (/^[+\-*\/%=<>!]+$/.test(token)) type='operator';
+        else if (/^(?:print|range|len|list|dict|set|tuple|int|float|str|sum|min|max|sorted|enumerate|zip|abs|round|bool|input)$/.test(token)) type='builtin';
+        else if (/^(?:def|class|return|yield|if|elif|else|for|while|in|break|continue|try|except|finally|raise|with|as|import|from|pass|and|or|not|is|lambda|global|nonlocal|assert|True|False|None)$/.test(token)) type='keyword';
+        else if (/^[A-Za-z_]\w*$/.test(token)) type='function';
+        result += type ? `<span class="tok-${type}">${escapeHTML(token)}</span>` : escapeHTML(token); last=pattern.lastIndex;
+      }
+      return result + escapeHTML(source.slice(last));
+    }
+    function inlineMarkup(text) {
+      let safe=escapeHTML(text);
+      safe=safe.replace(/`([^`]+)`/g,'<code class="inline-code">$1</code>').replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\*([^*]+)\*/g,'<em>$1</em>');
+      return safe.replace(/\n/g,'<br>');
+    }
+    function renderUserMarkdown(text) {
+      const re=/```([a-zA-Z0-9_+-]*)\n([\s\S]*?)```/g; let html=''; let last=0; let m;
+      while ((m=re.exec(text))!==null) { const before=text.slice(last,m.index); if (before.trim()) html+=`<p>${inlineMarkup(before.trim())}</p>`; html+=`<pre><code>${highlightPython(m[2])}</code></pre>`; last=re.lastIndex; }
+      const rest=text.slice(last); if (rest.trim()) html+=`<p>${inlineMarkup(rest.trim())}</p>`; return html || `<p>${inlineMarkup(text)}</p>`;
+    }
+    function formatTime(ts) { return new Date(ts || Date.now()).toLocaleTimeString([], {hour:'numeric',minute:'2-digit'}); }
+    function renderUserMessage(message) {
+      return `<div class="message-row user-row"><div class="user-message-wrap"><div class="message-meta"><span>You</span><span>·</span><span>${formatTime(message.ts)}</span><span class="avatar-tiny">P</span></div><div class="user-bubble">${renderUserMarkdown(message.text)}</div></div></div>`;
+    }
+    function renderAssistantMessage(message) {
+      const a=message.answer || {}; const codeId=`${message.id}-code`;
+      if (a.example) codeRegistry[codeId]=a.example;
+      const category=a.category || 'Python guide';
+      const isFallback=a.kind==='fallback';
+      const suggestionBlock=isFallback ? `<div class="related-wrap"><div class="related-label">Try one of these topics</div><div class="related-list">${(a.suggestions||[]).map(x=>`<button class="related-chip" data-related="${escapeHTML(x)}">${escapeHTML(x)}</button>`).join('')}</div></div>` : '';
+      const exampleBlock=a.example ? `<section class="code-card"><div class="code-card-head"><span class="code-language"><span class="py-mini">Py</span> PYTHON EXAMPLE</span><div class="code-actions"><button class="code-action" data-action="copy" data-code-id="${codeId}">${icon('copy',12)}<span>Copy</span></button>${a.runAllowed ? `<button class="code-action run-action" data-action="run" data-code-id="${codeId}">${icon('play',12)}<span>Run code</span></button>` : `<button class="code-action" disabled title="${escapeHTML(a.runNote)}">Local only</button>`}</div></div><pre><code>${highlightPython(a.example)}</code></pre>${a.output ? `<div class="expected-output"><div class="output-label">Output</div><pre>${escapeHTML(a.output)}</pre></div>` : ''}${a.runAllowed ? `<div class="run-result" data-run-result="${codeId}"></div>` : `<div class="code-note"><strong>Note:</strong> ${escapeHTML(a.runNote || 'This example needs a local environment.')}</div>`}</section>` : '';
+      const summary = a.summary ? `<p class="answer-summary">${inlineMarkup(a.summary)}</p>` : '';
+      const explanation = a.explanation ? `<section class="answer-section"><h3><span class="section-dot">${icon('book',11)}</span>${isFallback?'How to get a better match':'How it works'}</h3><div class="answer-copy"><p>${inlineMarkup(a.explanation)}</p></div></section>` : '';
+      const tip = a.tip ? `<div class="takeaway"><span class="takeaway-icon">✦</span><div><strong>PyGuide tip</strong><br>${inlineMarkup(a.tip)}</div></div>` : '';
+      const related = !isFallback && a.related?.length ? `<div class="related-wrap"><div class="related-label">Related concepts</div><div class="related-list">${a.related.map(x=>`<button class="related-chip" data-related="${escapeHTML(x)}">${escapeHTML(x)}</button>`).join('')}</div></div>` : '';
+      const feedback=message.feedback || '';
+      const footer = `<div class="answer-footer"><button class="feedback-btn ${feedback==='up'?'selected':''}" data-action="feedback" data-vote="up" data-message-id="${message.id}">${icon('thumbUp',12)}<span>${feedback==='up'?'Helpful — thanks':'Helpful'}</span></button><button class="feedback-btn ${feedback==='down'?'selected':''}" data-action="feedback" data-vote="down" data-message-id="${message.id}">${icon('thumbDown',12)}<span>${feedback==='down'?'Feedback noted':'Not helpful'}</span></button><span class="footer-spacer"></span>${!isFallback && a.docId ? `<button class="feedback-btn ${memory.learned.has(a.docId)?'selected':''}" data-action="learn" data-message-id="${message.id}" data-doc-id="${a.docId}">${icon('check',12)}<span>${memory.learned.has(a.docId)?'Learned':'Mark learned'}</span></button>` : ''}<button class="feedback-btn" data-action="regenerate" data-message-id="${message.id}">${icon('refresh',12)}<span>Regenerate</span></button></div>`;
+      return `<div class="message-row assistant-row" data-assistant-id="${message.id}"><article class="assistant-card"><div class="assistant-card-head"><div class="assistant-logo">${logoSvg}</div><div class="assistant-head-copy"><strong>PyGuide AI</strong><span>· ${formatTime(message.ts)}</span></div><span class="grounded-badge">${isFallback?'KNOWLEDGE SEARCH':'CURATED PYTHON GUIDE'}</span></div><div class="assistant-card-body"><div class="answer-eyebrow">${escapeHTML(category)} · ${isFallback?'SEARCH ASSIST':'CONCEPT EXPLAINER'}</div><h2 class="answer-title">${escapeHTML(a.title || 'Python guide')}</h2>${summary}${explanation}${exampleBlock}${tip}${related}${suggestionBlock}</div>${footer}</article></div>`;
+    }
+    function renderThread() {
+      const chat=currentChat(); const welcome=document.getElementById('welcome'); const list=document.getElementById('messageList');
+      document.getElementById('threadTitle').textContent=chat?.messages?.length ? chat.title : 'Python assistant';
+      if (!chat || !chat.messages || chat.messages.length===0) { welcome.classList.remove('hidden'); list.classList.add('hidden'); list.innerHTML=''; document.getElementById('typingIndicator').classList.add('hidden'); }
+      else { welcome.classList.add('hidden'); list.classList.remove('hidden'); Object.keys(codeRegistry).forEach(key=>delete codeRegistry[key]); list.innerHTML=chat.messages.map(m=>m.role==='user'?renderUserMessage(m):renderAssistantMessage(m)).join(''); document.getElementById('typingIndicator').classList.toggle('hidden', !(pendingByChat.get(chat.id)>0)); }
+      renderSidebar(); renderGuide();
+      requestAnimationFrame(()=>{ const scroller=document.getElementById('threadScroll'); scroller.scrollTop=scroller.scrollHeight; });
+    }
+    function renderSidebar() {
+      const container=document.getElementById('recentChats'); const chats=memory.chats.filter(c=>c.messages?.length).sort((a,b)=>b.updated-a.updated).slice(0,8);
+      document.getElementById('recentCount').textContent=chats.length ? String(chats.length).padStart(2,'0') : '';
+      if (!chats.length) container.innerHTML='<div class="recent-empty">Your conversations will show up here.</div>';
+      else container.innerHTML=chats.map(c=>`<button class="nav-link recent-link ${c.id===activeChatId?'active':''}" data-chat-id="${c.id}" title="${escapeHTML(c.title)}"><span class="nav-icon">${icon('clock',14)}</span><span class="recent-name">${escapeHTML(c.title)}</span><span class="recent-time">${relativeTime(c.updated)}</span><span class="recent-delete" data-delete-chat="${c.id}" title="Delete chat">${icon('trash',12)}</span></button>`).join('');
+      document.querySelectorAll('.sidebar [data-query]').forEach(el=>el.classList.remove('active'));
+      const pct=Math.round(Math.min(100, memory.visited.size/KB.length*100));
+      document.getElementById('sidebarProgressPct').textContent=pct+'%'; document.getElementById('sidebarProgressRing').style.setProperty('--progress',pct+'%');
+      document.getElementById('sidebarProgressText').textContent=memory.visited.size ? `${memory.visited.size} concept${memory.visited.size===1?'':'s'} explored` : 'Explore your first concept';
+    }
+    function renderGuide() {
+      const panel=document.getElementById('rightPanel'); const pct=Math.round(Math.min(100, memory.visited.size/KB.length*100));
+      const chat=currentChat(); const latest=[...(chat?.messages||[])].reverse().find(m=>m.role==='assistant' && m.answer?.docId)?.answer;
+      const path=[['01','Python fundamentals','Names, values & syntax','Python basics'],['02','Core building blocks','Collections, loops & functions','List comprehensions'],['03','Structure & debugging','Modules, classes & errors','Classes and objects'],['04','Data tools','Pandas, NumPy & plotting','Pandas and DataFrames']];
+      const progress=`<div class="right-head"><h2>Python guide</h2><span>YOUR PATH</span></div><div class="progress-card"><div class="progress-card-top"><div><h3>Learning progress</h3><p>${memory.visited.size ? 'Nice work — keep building your Python toolkit.' : 'Start with the essentials, then explore at your pace.'}</p></div><span class="progress-percent">${pct}%</span></div><div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div><div class="progress-counts"><span>${memory.visited.size} concepts explored</span><span>${memory.learned.size} marked learned</span></div></div>`;
+      let concept='';
+      if (latest) {
+        concept=`<div class="right-section"><div class="panel-eyebrow">Current concept</div><div class="active-concept"><span class="concept-tag">${escapeHTML(latest.category)}</span><h3>${escapeHTML(latest.title)}</h3><p>${escapeHTML(latest.summary)}</p></div></div><div class="right-section"><div class="panel-eyebrow">Related topics</div><div class="related-panel-list">${(latest.related||[]).map(x=>`<button class="related-panel-item" data-related="${escapeHTML(x)}"><span class="tiny-dot"></span>${escapeHTML(x)}${icon('chevron',12)}</button>`).join('')}</div></div>`;
+      } else {
+        concept=`<div class="right-section"><div class="panel-eyebrow">Python concept</div><div class="concept-placeholder"><div class="placeholder-symbol">${icon('spark',15)}</div><strong>Your next idea starts here</strong><p>Ask a question to see a concise concept card, related topics, and a learning path tailored to what you explore.</p></div></div>`;
+      }
+      const pathHTML=`<div class="right-section"><div class="panel-eyebrow">Suggested path</div><div class="path-list">${path.map(([n,title,sub,target],i)=>`<button class="path-item ${memory.visited.has(KB.find(e=>e.title===target)?.id)?'done':''}" data-related="${escapeHTML(target)}"><span class="path-number">${n}</span><span class="path-copy"><strong>${title}</strong><span>${sub}</span></span><span class="path-arrow">${i===0?'›':'·'}</span></button>`).join('')}</div></div>`;
+      panel.innerHTML=progress+concept+pathHTML+`<div class="right-note"><strong>Local knowledge, transparent answers.</strong><br>Explanations are retrieved from PyGuide’s curated Python guide; code runs in a restricted local sandbox.</div>`;
+    }
+    function updateVisited() { saveAppState(); renderSidebar(); renderGuide(); }
+    function sendQuestion(raw) {
+      const text=String(raw||'').trim(); if (!text) return;
+      closeSidebar();
+      const chat=ensureChat(); const now=Date.now();
+      if (!chat.messages.length) setThreadTitle(text.replace(/\s+/g,' '));
+      chat.messages.push({id:makeId(),role:'user',text,ts:now}); chat.updated=now;
+      document.getElementById('questionInput').value=''; autosizeInput(); updateSendState();
+      saveAppState(); renderThread();
+      const indicator=document.getElementById('typingIndicator'); indicator.classList.remove('hidden');
+      requestAnimationFrame(()=>{ const scroller=document.getElementById('threadScroll'); scroller.scrollTop=scroller.scrollHeight; });
+      const chatId=chat.id;
+      pendingByChat.set(chatId,(pendingByChat.get(chatId)||0)+1);
+      window.setTimeout(()=>{
+        const target=memory.chats.find(c=>c.id===chatId);
+        if (target) {
+          const answer=answerQuestion(text);
+          target.messages.push({id:makeId(),role:'assistant',question:text,answer,ts:Date.now(),feedback:''}); target.updated=Date.now();
+        }
+        const pending=Math.max(0,(pendingByChat.get(chatId)||1)-1);
+        if (pending) pendingByChat.set(chatId,pending); else pendingByChat.delete(chatId);
+        saveAppState();
+        if (activeChatId===chatId) renderThread();
+        else renderSidebar();
+      },420);
+    }
+    function startNewChat() { activeChatId=null; memory.activeId=null; saveAppState(); renderThread(); document.getElementById('questionInput').focus(); closeSidebar(); }
+    function openChat(id) { if (!memory.chats.some(c=>c.id===id)) return; activeChatId=id; saveAppState(); renderThread(); closeSidebar(); }
+    function deleteChat(id) { memory.chats=memory.chats.filter(c=>c.id!==id); if (activeChatId===id) activeChatId=null; pendingByChat.delete(id); saveAppState(); renderThread(); showToast('Conversation deleted'); }
+    function toggleTheme() { memory.theme=memory.theme==='dark'?'light':'dark'; document.documentElement.dataset.theme=memory.theme; storageSet('pyguide-theme',memory.theme); updateThemeIcons(); }
+    function updateThemeIcons() { const path=memory.theme==='dark'?ICONS.sun:ICONS.moon; ['themeIcon','sideThemeIcon'].forEach(id=>{const el=document.getElementById(id); if(el) el.innerHTML=path;}); }
+    function showToast(text) { const el=document.getElementById('toast'); el.textContent=text; el.classList.add('show'); clearTimeout(toastTimer); toastTimer=setTimeout(()=>el.classList.remove('show'),2100); }
+    function openModal(id) { document.getElementById(id).classList.add('show'); document.body.style.overflow='hidden'; if(id==='topicModal') { renderTopicResults(''); setTimeout(()=>document.getElementById('topicSearch').focus(),60); } }
+    function closeModal(id) { document.getElementById(id).classList.remove('show'); if(!document.querySelector('.modal-backdrop.show')) document.body.style.overflow=''; }
+    function openTopics() { openModal('topicModal'); }
+    function renderTopicResults(filter) {
+      const q=normalize(filter); const root=document.getElementById('topicResults');
+      const entries=KB.filter(e=>!q || normalize([e.title,e.category,e.summary,...e.keywords].join(' ')).includes(q) || scoreEntry(e,q)>2.2);
+      if (!entries.length) { root.innerHTML='<div class="empty-search">No matching topics yet. Try a shorter term or ask PyGuide in chat.</div>'; return; }
+      const groups=new Map(); for(const entry of entries){if(!groups.has(entry.category))groups.set(entry.category,[]);groups.get(entry.category).push(entry);}
+      root.innerHTML=[...groups.entries()].map(([category,list])=>`<div class="topic-group-title">${escapeHTML(category)}</div>${list.map(e=>`<button class="topic-result" data-topic-id="${e.id}"><span class="topic-result-icon">${icon('book',14)}</span><span class="topic-result-copy"><strong>${escapeHTML(e.title)}</strong><span>${escapeHTML(e.summary)}</span></span><span class="topic-result-arrow">›</span></button>`).join('')}`).join('');
+    }
+    function chooseTopic(id) { const entry=KB.find(e=>e.id===id); if(!entry)return; closeModal('topicModal'); sendQuestion(`Explain ${entry.title} in Python.`); }
+    function applyFeedback(messageId, value) {
+      const chat=currentChat(); const message=chat?.messages.find(m=>m.id===messageId); if(!message)return;
+      message.feedback=message.feedback===value?'':value; saveAppState(); renderThread();
+      showToast(value==='up'?'Thanks — feedback saved':'Thanks, I’ll keep that in mind');
+    }
+    function toggleLearned(messageId, docId) {
+      const chat=currentChat(); if(!chat)return; const msg=chat.messages.find(m=>m.id===messageId); if(!msg)return;
+      if(memory.learned.has(docId)) memory.learned.delete(docId); else memory.learned.add(docId);
+      saveAppState(); renderThread(); showToast(memory.learned.has(docId)?'Added to your learning progress':'Removed from learned topics');
+    }
+    function regenerate(messageId) {
+      const chat=currentChat(); const msg=chat?.messages.find(m=>m.id===messageId); if(!msg)return;
+      const next=(msg.answer?.variant||0)+1; msg.answer=answerQuestion(msg.question||'',next); msg.ts=Date.now(); saveAppState(); renderThread(); showToast('Answer refreshed from the knowledge base');
+    }
+    async function copyCode(codeId, button) {
+      const text=codeRegistry[codeId]; if(!text)return;
+      try { if(navigator.clipboard && window.isSecureContext) await navigator.clipboard.writeText(text); else { const temp=document.createElement('textarea'); temp.value=text; temp.style.position='fixed'; temp.style.opacity='0'; document.body.append(temp); temp.select(); document.execCommand('copy'); temp.remove(); } showToast('Python code copied'); if(button){const old=button.innerHTML;button.innerHTML=icon('check',12)+'<span>Copied</span>';setTimeout(()=>button.innerHTML=old,1200);} }
+      catch { showToast('Could not access the clipboard'); }
+    }
+    async function runCode(codeId, button, resultEl) {
+      const code=codeRegistry[codeId]; if(!code || !resultEl)return;
+      button.disabled=true; button.innerHTML=`<span class="typing-dots"><i></i><i></i><i></i></span><span>Running</span>`;
+      resultEl.className='run-result is-open'; resultEl.innerHTML='<div class="run-result-head"><span>Console · running in safe Python</span></div><pre>Executing snippet…</pre>';
+      try {
+        const response=await fetch('/api/run',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code})});
+        const data=await response.json(); const output=data.output || data.error || 'No output';
+        resultEl.className=`run-result is-open ${data.ok?'':'is-error'}`;
+        resultEl.innerHTML=`<div class="run-result-head"><span>Console · ${data.ok?'completed':'needs attention'}</span><span>${Number.isFinite(data.durationMs)?data.durationMs+' ms':''}</span></div><pre>${escapeHTML(output)}</pre>`;
+      } catch (error) {
+        resultEl.className='run-result is-open is-error';
+        resultEl.innerHTML='<div class="run-result-head"><span>Runner unavailable</span></div><pre>Could not reach the Python runner. Start the app with “python3 server.py” to enable code execution.</pre>';
+      } finally { button.disabled=false; button.innerHTML=icon('play',12)+'<span>Run code</span>'; }
+    }
+    function autosizeInput() { const input=document.getElementById('questionInput'); input.style.height='auto'; input.style.height=Math.min(input.scrollHeight,130)+'px'; }
+    function updateSendState() { const input=document.getElementById('questionInput'); document.getElementById('sendButton').disabled=!input.value.trim(); }
+    function closeSidebar() { document.getElementById('appShell').classList.remove('sidebar-open'); }
+    function relatedQuestion(topic) { sendQuestion(`Can you explain ${topic} in Python?`); }
+    function openGuideToggle() { document.getElementById('appShell').classList.toggle('guide-hidden'); }
+
+    const PRACTICES = [
+      {title:'Add the numbers', category:'FUNDAMENTALS', level:'BEGINNER', prompt:'Given the list `numbers`, calculate its total and print the result. Your program should print **22**.', hint:'Try the built-in `sum()` function, or loop through each number and add it to a running total.', starter:'numbers = [4, 7, 2, 9]\n# Add the numbers and print the total', solution:'numbers = [4, 7, 2, 9]\ntotal = sum(numbers)\nprint(total)'},
+      {title:'Square only the even numbers', category:'LISTS & LOOPS', level:'BEGINNER', prompt:'Create a list containing the square of each even number in `numbers`, then print it. Expected output: **[4, 16, 36]**.', hint:'Use `number % 2 == 0` to check whether a number is even. A list comprehension is one concise option.', starter:'numbers = [1, 2, 3, 4, 5, 6]\n# Keep even numbers, square them, and print the result', solution:'numbers = [1, 2, 3, 4, 5, 6]\neven_squares = [number ** 2 for number in numbers if number % 2 == 0]\nprint(even_squares)'},
+      {title:'Count the vowels', category:'STRINGS & LOOPS', level:'BEGINNER', prompt:'Count how many vowels appear in `word` (a, e, i, o, u) and print the count. Expected output: **5**.', hint:'Loop over the lowercase string and use `letter in "aeiou"` to test each character.', starter:'word = "education"\ncount = 0\n# Count the vowels, then print count', solution:'word = "education"\ncount = 0\nfor letter in word:\n    if letter in "aeiou":\n        count += 1\nprint(count)'},
+      {title:'FizzBuzz to 15', category:'CONDITIONALS', level:'INTERMEDIATE', prompt:'Loop from 1 through 15. Print `FizzBuzz` for multiples of both 3 and 5, `Fizz` for multiples of 3, `Buzz` for multiples of 5, and the number otherwise.', hint:'Check divisibility by 15 (or by both 3 and 5) before checking 3 or 5 individually.', starter:'for number in range(1, 16):\n    # Add your conditions here\n    pass', solution:'for number in range(1, 16):\n    if number % 15 == 0:\n        print("FizzBuzz")\n    elif number % 3 == 0:\n        print("Fizz")\n    elif number % 5 == 0:\n        print("Buzz")\n    else:\n        print(number)'}
+    ];
+    function renderPractice(index) {
+      practiceIndex=(index+PRACTICES.length)%PRACTICES.length; const p=PRACTICES[practiceIndex];
+      document.getElementById('practiceMeta').textContent=`CHALLENGE ${String(practiceIndex+1).padStart(2,'0')} · ${p.category}`;
+      document.getElementById('practiceQuestion').textContent=p.title;
+      document.getElementById('practicePrompt').innerHTML=inlineMarkup(p.prompt);
+      document.getElementById('practiceLevel').textContent=p.level;
+      document.getElementById('practiceHint').innerHTML=`<strong>Hint</strong> · ${inlineMarkup(p.hint)}`;
+      document.getElementById('practiceEditor').value=p.starter;
+      document.getElementById('practiceOutput').className='practice-output';
+      document.getElementById('practiceOutput').textContent='';
+      document.getElementById('solutionBox').classList.remove('show');
+      document.getElementById('solutionCode').textContent=p.solution;
+    }
+    async function runPractice() {
+      const code=document.getElementById('practiceEditor').value; const out=document.getElementById('practiceOutput'); const btn=document.getElementById('runPractice');
+      out.className='practice-output show'; out.textContent='Running…'; btn.disabled=true;
+      try { const res=await fetch('/api/run',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code})}); const data=await res.json(); out.textContent=data.output || data.error || 'No output'; out.className=`practice-output show ${data.ok?'':'is-error'}`; }
+      catch { out.textContent='Could not reach the Python runner. Start the app with “python3 server.py” to enable code execution.'; out.className='practice-output show is-error'; }
+      finally { btn.disabled=false; }
+    }
+    function togglePracticeSolution() { document.getElementById('solutionBox').classList.toggle('show'); }
+
+    document.getElementById('chatForm').addEventListener('submit', e=>{e.preventDefault();sendQuestion(document.getElementById('questionInput').value);});
+    document.getElementById('questionInput').addEventListener('input',()=>{autosizeInput();updateSendState();});
+    document.getElementById('questionInput').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){e.preventDefault();sendQuestion(e.currentTarget.value);}});
+    document.getElementById('newChatButton').addEventListener('click',startNewChat);
+    document.getElementById('searchButton').addEventListener('click',openTopics);
+    document.getElementById('sidebarSearch').addEventListener('click',openTopics);
+    document.getElementById('exploreTopics').addEventListener('click',openTopics);
+    document.getElementById('exploreNav').addEventListener('click',openTopics);
+    document.getElementById('startLearning').addEventListener('click',()=>document.getElementById('questionInput').focus());
+    document.getElementById('practiceNav').addEventListener('click',()=>{renderPractice(practiceIndex);openModal('practiceModal');});
+    document.getElementById('themeToggle').addEventListener('click',toggleTheme);
+    document.getElementById('themeToggleSide').addEventListener('click',toggleTheme);
+    document.getElementById('guideToggle').addEventListener('click',openGuideToggle);
+    document.getElementById('mobileMenu').addEventListener('click',()=>document.getElementById('appShell').classList.add('sidebar-open'));
+    document.getElementById('mobileScrim').addEventListener('click',closeSidebar);
+    document.getElementById('topicSearch').addEventListener('input',e=>renderTopicResults(e.target.value));
+    document.getElementById('runPractice').addEventListener('click',runPractice);
+    document.getElementById('nextPractice').addEventListener('click',()=>renderPractice(practiceIndex+1));
+    document.getElementById('revealSolution').addEventListener('click',togglePracticeSolution);
+    document.getElementById('loadSolution').addEventListener('click',()=>{document.getElementById('practiceEditor').value=PRACTICES[practiceIndex].solution;showToast('Solution loaded into the editor');});
+    document.querySelectorAll('[data-close-modal]').forEach(btn=>btn.addEventListener('click',()=>closeModal(btn.dataset.closeModal)));
+    document.querySelectorAll('.modal-backdrop').forEach(backdrop=>backdrop.addEventListener('click',e=>{if(e.target===backdrop)closeModal(backdrop.id);}));
+    document.querySelectorAll('[data-prompt]').forEach(btn=>btn.addEventListener('click',()=>sendQuestion(btn.dataset.prompt)));
+    document.querySelectorAll('[data-feature]').forEach(card=>card.addEventListener('click',()=>{
+      const feature=card.dataset.feature;
+      if(feature==='ask') document.getElementById('questionInput').focus();
+      if(feature==='examples') sendQuestion('Show me a clear Python function example with its output.');
+      if(feature==='errors') sendQuestion('How can I understand and debug common Python errors?');
+      if(feature==='steps') sendQuestion('Can you explain Python variables step by step?');
+      if(feature==='search') openTopics();
+      if(feature==='practice') { renderPractice(practiceIndex); openModal('practiceModal'); }
+    }));
+    document.addEventListener('click',e=>{
+      const deleteTarget=e.target.closest('[data-delete-chat]');
+      if(deleteTarget){ e.stopPropagation(); deleteChat(deleteTarget.dataset.deleteChat); return; }
+      const chatBtn=e.target.closest('[data-chat-id]'); if(chatBtn){openChat(chatBtn.dataset.chatId);return;}
+      const topicBtn=e.target.closest('[data-topic-id]'); if(topicBtn){chooseTopic(topicBtn.dataset.topicId);return;}
+      const related=e.target.closest('[data-related]'); if(related){relatedQuestion(related.dataset.related);return;}
+      const action=e.target.closest('[data-action]'); if(!action)return;
+      const type=action.dataset.action;
+      if(type==='copy') copyCode(action.dataset.codeId,action);
+      if(type==='run') {const id=action.dataset.codeId;runCode(id,action,document.querySelector(`[data-run-result="${CSS.escape(id)}"]`));}
+      if(type==='feedback') applyFeedback(action.dataset.messageId,action.dataset.vote);
+      if(type==='learn') toggleLearned(action.dataset.messageId,action.dataset.docId);
+      if(type==='regenerate') regenerate(action.dataset.messageId);
+    });
+    document.addEventListener('keydown',e=>{
+      if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){e.preventDefault();openTopics();}
+      if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='n'){e.preventDefault();startNewChat();}
+      if(e.key==='Escape'){document.querySelectorAll('.modal-backdrop.show').forEach(m=>closeModal(m.id));closeSidebar();}
+    });
+
+    document.documentElement.dataset.theme=memory.theme;
+    updateThemeIcons();
+    document.getElementById('kbStatusText').textContent=`CURATED KNOWLEDGE · ${KB.length} TOPICS`;
+    if(activeChatId && !memory.chats.some(c=>c.id===activeChatId)) activeChatId=null;
+    renderThread();
+    renderPractice(0);
+  </script>
+</body>
+</html>

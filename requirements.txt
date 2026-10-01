@@ -1,0 +1,1 @@
+# PyGuide AI uses Python standard library only
